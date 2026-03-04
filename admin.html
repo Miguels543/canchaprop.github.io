@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cancha Pro – Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#00C853;--lime:#AEEA00;--gold:#FFD600;--red:#FF3D00;
+  --white:#F0FFF4;--gray:#7A9B85;--coal:#161E19;--dark:#0D1510;--black:#080C09;
+  --card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.08);
+}
+html,body{height:100%;background:var(--black);color:var(--white);font-family:'Syne',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.2rem;border-radius:.6rem;font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;cursor:pointer;border:none;text-decoration:none;transition:all .2s;white-space:nowrap}
+.btn-g{background:var(--green);color:#000}.btn-g:hover{background:var(--lime)}
+.btn-gd{background:var(--gold);color:#000}.btn-gd:hover{background:#e6c200}
+.btn-gh{background:rgba(255,255,255,.06);color:var(--gray);border:1px solid rgba(255,255,255,.1)}.btn-gh:hover{color:var(--white);border-color:rgba(255,255,255,.25)}
+.btn-ol{background:transparent;color:var(--green);border:1.5px solid rgba(0,200,83,.4)}.btn-ol:hover{background:rgba(0,200,83,.1)}
+.btn-red{background:rgba(255,61,0,.15);color:var(--red);border:1px solid rgba(255,61,0,.3)}.btn-red:hover{background:rgba(255,61,0,.25)}
+.btn-sm{padding:.38rem .8rem;font-size:.78rem}
+.btn-fw{width:100%;justify-content:center}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* ALERTS */
+.alert{padding:.8rem 1rem;border-radius:.7rem;font-size:.83rem;margin:.6rem 0;display:flex;gap:.5rem;align-items:flex-start}
+.hidden{display:none!important}
+.a-err{background:rgba(255,61,0,.1);border:1px solid rgba(255,61,0,.3);color:#ff8a65}
+.a-ok{background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.25);color:var(--green)}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:99px;font-size:.7rem;font-weight:700}
+.b-ok{background:rgba(0,200,83,.15);color:var(--green)}
+.b-pend{background:rgba(255,214,0,.15);color:var(--gold)}
+.b-cancel{background:rgba(255,61,0,.15);color:var(--red)}
+
+/* CARD */
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.2rem;padding:1.5rem}
+.card-hdr{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;margin-bottom:1.2rem}
+.card-title{font-size:1.1rem;color:var(--white)}
+.card-sub{font-size:.78rem;color:var(--gray);margin-top:.1rem}
+
+/* INPUT */
+label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:.35rem}
+input,select,textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:.55rem;padding:.65rem .85rem;color:var(--white);font-family:'Syne',sans-serif;font-size:.86rem;transition:border-color .2s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+select option{background:var(--coal)}
+.fg{margin-bottom:.9rem}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;gap:.7rem;cursor:pointer}
+.toggle-track{width:40px;height:22px;background:rgba(255,255,255,.15);border-radius:99px;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-track.on{background:var(--green)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left .2s}
+.toggle-track.on .toggle-thumb{left:21px}
+.toggle-lbl{font-size:.82rem;color:var(--white)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+thead{background:rgba(0,200,83,.05)}
+th{padding:.7rem 1rem;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);font-weight:700;border-bottom:1px solid rgba(255,255,255,.06)}
+td{padding:.7rem 1rem;font-size:.83rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.02)}
+.tw{overflow-x:auto}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.hidden{display:none!important}
+.modal{background:var(--dark);border:1px solid rgba(0,200,83,.2);border-radius:1.4rem;padding:2rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.mt{font-size:1.4rem;color:var(--white)}
+.mc{background:none;border:none;color:var(--gray);font-size:1.4rem;cursor:pointer;padding:.2rem .5rem;border-radius:.4rem}
+.mc:hover{color:var(--white);background:rgba(255,255,255,.08)}
+
+/* LAYOUT */
+#login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
+.lc{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.5rem;padding:2.5rem;width:100%;max-width:420px}
+.ll{text-align:center;margin-bottom:2rem}
+.ll .li{font-size:2.5rem;margin-bottom:.5rem}
+.ll h1{font-size:2rem;color:var(--white);margin-bottom:.3rem}
+.ll h1 span{color:var(--green)}
+.ll p{font-size:.83rem;color:var(--gray)}
+#admin-app{display:none;height:100vh;flex-direction:row}
+#admin-app.show{display:flex}
+
+/* SIDEBAR */
+#sidebar{width:260px;flex-shrink:0;background:var(--dark);border-right:1px solid rgba(0,200,83,.15);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+.sh{padding:1.2rem;border-bottom:1px solid rgba(0,200,83,.15)}
+.sl{display:flex;align-items:center;gap:.7rem}
+.sl-icon{width:36px;height:36px;background:var(--green);border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.sl-name{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em}
+.sl-name span{color:var(--green)}
+.sl-sub{font-size:.65rem;color:var(--gray)}
+.sn{padding:.8rem 0;flex:1}
+.snl{padding:0 1.2rem;font-size:.63rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);margin-top:1rem;margin-bottom:.4rem;display:block}
+.nav-item{padding:.8rem 1.2rem;cursor:pointer;display:flex;align-items:center;gap:.6rem;font-size:.82rem;font-weight:600;color:var(--gray);transition:all .18s;border-left:3px solid transparent}
+.nav-item:hover{background:rgba(0,200,83,.05);color:var(--white)}
+.nav-item.active{background:rgba(0,200,83,.1);color:var(--green);border-left-color:var(--green)}
+.ni{font-size:1.1rem}
+.n-badge{background:var(--red);color:#fff;font-size:.62rem;padding:.15rem .45rem;border-radius:99px;margin-left:auto}
+.sf{padding:1.2rem;border-top:1px solid rgba(0,200,83,.15)}
+.su{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem}
+.su-av{width:36px;height:36px;background:rgba(0,200,83,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+#user-email{font-size:.82rem;color:var(--white)}
+.su-role{font-size:.68rem;color:var(--gray)}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 1.5rem;border-bottom:1px solid rgba(0,200,83,.15);background:rgba(0,0,0,.2);flex-shrink:0}
+#page-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--white)}
+.page-wrap{flex:1;overflow-y:auto;padding:1.5rem}
+
+/* PAGES */
+.page{display:none}
+.page.active{display:block}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.9rem;margin-bottom:1.5rem}
+.sc{background:var(--card-bg);border:1px solid rgba(0,200,83,.15);border-radius:1rem;padding:1.2rem;display:flex;flex-direction:column;gap:.6rem}
+.si{font-size:1.6rem}
+.sl-stat{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gray)}
+.sv{font-size:1.6rem;font-weight:800;color:var(--white)}
+.sv.g{color:var(--green)}.sv.gd{color:var(--gold)}
+
+/* RESERVATIONS */
+.res-layout{display:grid;grid-template-columns:1fr 340px;gap:1.2rem}
+.res-filters-bar{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.2rem;padding:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:1rem}
+.rf{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.rf input,.rf select{width:auto}
+.rf input[type="text"]{width:180px}
+.rf input[type="date"]{width:145px}
+.rf select{width:160px}
+
+/* SIDE PANEL */
+.sp-stats{margin-bottom:.8rem}
+.sp-mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:.8rem}
+.sp-stat{text-align:center}
+.sp-num{font-size:1.3rem;font-weight:800;color:var(--white)}
+.sp-num.g{color:var(--green)}.sp-num.gd{color:var(--gold)}
+.sp-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gray)}
+.sp-list{display:flex;flex-direction:column;gap:.5rem;max-height:calc(100vh - 420px);overflow-y:auto}
+.sp-item{background:rgba(0,200,83,.05);border:1px solid rgba(0,200,83,.1);border-radius:.6rem;padding:.7rem .9rem;cursor:pointer;transition:border-color .2s}
+.sp-item:hover{border-color:var(--green)}
+.sp-time{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.2rem}
+.sp-info{font-size:.75rem;color:var(--gray)}
+
+/* CALENDAR PAGE */
+.cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.admin-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.adcal-hdr{text-align:center;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);padding:.4rem 0}
+.adcal-day{min-height:56px;border-radius:.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.85rem;border:1px solid rgba(255,255,255,.06);cursor:default;transition:all .2s;padding:.4rem;gap:2px}
+.adcal-day.has{cursor:pointer}
+.adcal-day.has:hover{border-color:var(--green)}
+.adcal-day.today{border-color:rgba(0,200,83,.4)}
+.adcal-day .daynum{font-weight:700}
+.adcal-dot{width:6px;height:6px;border-radius:50%}
+.cal-legend{display:flex;gap:1rem;margin-top:1rem;flex-wrap:wrap}
+.cal-leg-item{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--gray)}
+.cal-leg-dot{width:10px;height:10px;border-radius:50%}
+
+/* AVAILABILITY */
+.tl-wrap{display:flex;flex-direction:column;gap:1.5rem;overflow-y:auto;max-height:calc(100vh - 200px)}
+.tl-court{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1rem;padding:1.2rem;overflow-x:auto}
+.tl-name{font-size:1rem;color:var(--white);margin-bottom:.8rem}
+.tl-scroll{overflow-x:auto}
+.tl-row{position:relative;height:50px;background:rgba(255,255,255,.02);border-radius:.5rem;min-width:960px}
+.tl-hour{position:absolute;top:0;height:100%;border-left:1px solid rgba(255,255,255,.06);display:flex;align-items:flex-end;padding-bottom:2px}
+.tl-hour span{font-size:.62rem;color:var(--gray);transform:translateX(-50%);white-space:nowrap}
+.tl-block{position:absolute;top:4px;height:calc(100% - 8px);border-radius:.4rem;display:flex;align-items:center;padding:0 .5rem;font-size:.72rem;font-weight:700;cursor:pointer;overflow:hidden;transition:opacity .2s}
+.tl-block:hover{opacity:.85}
+
+/* COURTS/EVENTS PAGE */
+.item-list{display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem}
+.item-card{background:var(--card-bg);border:1px solid rgba(0,200,83,.15);border-radius:1.1rem;padding:1.4rem;display:grid;grid-template-columns:1fr auto;gap:1.2rem;align-items:start}
+.ic-emoji{font-size:1.8rem;margin-bottom:.3rem}
+.ic-name{font-size:1.1rem;color:var(--white)}
+.ic-desc{font-size:.78rem;color:var(--gray);margin:.3rem 0 .6rem}
+.ic-prices{font-size:.8rem;color:var(--gray)}
+.ic-prices span{color:var(--white);font-weight:700}
+.ic-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
+.ic-badge{font-size:.68rem;padding:.2rem .55rem;border-radius:99px}
+.ic-badge.pop{background:rgba(255,214,0,.15);color:var(--gold)}
+.ic-badge.act{background:rgba(0,200,83,.12);color:var(--green)}
+.ic-badge.inact{background:rgba(255,255,255,.08);color:var(--gray)}
+.ic-actions{display:flex;flex-direction:column;gap:.5rem}
+
+/* RESPONSIVE ADMIN */
+@media(max-width:1200px){.res-layout{grid-template-columns:1fr}}
+@media(max-width:900px){#sidebar{display:none}.page-wrap{padding:1rem}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-page">
+  <div class="lc">
+    <div class="ll">
+      <div class="li">⚽</div>
+      <h1>CANCHA <span>PRO</span></h1>
+      <p>Panel de Administración</p>
+    </div>
+    <div class="fg"><label for="login-email">Email</label><input type="email" id="login-email" placeholder="admin@canchapr.com" autocomplete="email"/></div>
+    <div class="fg"><label for="login-pass">Contraseña</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/></div>
+    <div class="alert a-err hidden" id="login-err"></div>
+    <button class="btn btn-g btn-fw" id="login-btn" onclick="doLogin()">🔐 Iniciar Sesión</button>
+    <p style="font-size:.68rem;color:var(--gray);text-align:center;margin-top:1rem">Acceso restringido. Crea tu usuario en Firebase Console → Authentication → Users.</p>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sh">
+      <div class="sl">
+        <div class="sl-icon">⚽</div>
+        <div>
+          <div class="sl-name">CANCHA <span>PRO</span></div>
+          <div class="sl-sub">Admin Panel</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sn">
+      <span class="snl">General</span>
+      <div class="nav-item active" data-page="dashboard"><span class="ni">📊</span> Dashboard</div>
+      <div class="nav-item" data-page="reservations"><span class="ni">📋</span> Reservas <span class="n-badge hidden" id="res-badge">0</span></div>
+      <div class="nav-item" data-page="calendar"><span class="ni">📅</span> Calendario</div>
+      <div class="nav-item" data-page="availability"><span class="ni">⏱️</span> Disponibilidad</div>
+      <span class="snl">Configuración</span>
+      <div class="nav-item" data-page="courts"><span class="ni">🏟️</span> Canchas</div>
+      <div class="nav-item" data-page="eventTypes"><span class="ni">🎉</span> Tipos de Reserva</div>
+    </nav>
+    <div class="sf">
+      <div class="su">
+        <div class="su-av">👤</div>
+        <div>
+          <div id="user-email">–</div>
+          <div class="su-role">Administrador</div>
+        </div>
+      </div>
+      <button class="btn btn-gh btn-fw btn-sm" onclick="doLogout()">🚪 Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div class="topbar">
+      <div id="page-title">DASHBOARD</div>
+      <a href="index.html" target="_blank" class="btn btn-ol btn-sm">🌐 Ver Sitio</a>
+    </div>
+    <div class="page-wrap">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="p-dashboard">
+        <div class="stats">
+          <div class="sc"><span class="si">📋</span><span class="sl-stat">Total Reservas</span><div class="sv" id="d-total">0</div></div>
+          <div class="sc"><span class="si">📅</span><span class="sl-stat">Reservas Hoy</span><div class="sv g" id="d-today">0</div></div>
+          <div class="sc"><span class="si">💵</span><span class="sl-stat">Ingresos Est.</span><div class="sv gd" id="d-rev">S/. 0</div></div>
+          <div class="sc"><span class="si">⏳</span><span class="sl-stat">Pendientes</span><div class="sv" id="d-pend">0</div></div>
+          <div class="sc"><span class="si">🏟️</span><span class="sl-stat">Canchas Activas</span><div class="sv" id="d-courts">0</div></div>
+          <div class="sc"><span class="si">🎉</span><span class="sl-stat">Tipos de Reserva</span><div class="sv" id="d-evts">0</div></div>
+        </div>
+        <div class="card">
+          <div class="card-hdr">
+            <div><div class="card-title">Reservas Recientes</div><div class="card-sub">Últimas 8</div></div>
+            <button class="btn btn-gh btn-sm" onclick="go('reservations')">Ver todas →</button>
+          </div>
+          <div class="tw"><table><thead><tr><th>Nombre</th><th>Fecha</th><th>Hora</th><th>Servicio</th><th>Total</th><th>Estado</th></tr></thead><tbody id="dash-tbody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- RESERVATIONS -->
+      <div class="page" id="p-reservations">
+        <div class="res-filters-bar">
+          <div><div class="card-title">Reservas</div><div class="card-sub"><span id="res-count">0</span> resultados</div></div>
+          <div class="rf">
+            <input type="text" id="rf-search" placeholder="🔍 Buscar nombre..." oninput="renderReservations()"/>
+            <input type="date" id="rf-date" onchange="renderReservations()"/>
+            <select id="rf-type" onchange="renderReservations()">
+              <option value="">Todos los tipos</option>
+              <option value="rental">⚽ Alquiler</option>
+              <option value="tournament">🏆 Campeonato</option>
+              <option value="other">✏️ Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="res-layout">
+          <div class="card" style="padding:0;overflow:hidden">
+            <div class="tw"><table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Fecha</th><th>Hora</th><th>Servicio</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="res-tbody"></tbody></table></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:1rem">
+            <div class="card sp-stats">
+              <div class="card-hdr" style="margin-bottom:.6rem">
+                <div class="card-title">📅 Reservas del Día</div>
+              </div>
+              <input type="date" id="side-date-filter" onchange="updateSidePanel()" style="margin-bottom:.6rem"/>
+              <div id="side-today-lbl" style="font-size:.78rem;color:var(--gray);margin-bottom:.6rem"></div>
+              <div class="sp-mini-stats">
+                <div class="sp-stat"><div class="sp-num" id="side-today-count">0</div><div class="sp-lbl">Total</div></div>
+                <div class="sp-stat"><div class="sp-num g" id="side-today-rev">S/. 0</div><div class="sp-lbl">Ingresos</div></div>
+                <div class="sp-stat"><div class="sp-num gd" id="side-today-pend">0</div><div class="sp-lbl">Pendientes</div></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title" style="margin-bottom:.8rem">🗓️ Lista del día</div>
+              <div class="sp-list" id="side-res-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALENDAR -->
+      <div class="page" id="p-calendar">
+        <div class="card">
+          <div class="cal-hdr">
+            <button class="btn btn-gh btn-sm" id="acal-prev">← Anterior</button>
+            <span id="acal-label" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--white)"></span>
+            <button class="btn btn-gh btn-sm" id="acal-next">Siguiente →</button>
+          </div>
+          <div class="admin-cal-grid" id="acal-grid"></div>
+          <div class="cal-legend">
+            <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#00C853"></div>Alquiler</div>
+            <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#FFD600"></div>Otro</div>
+            <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#64B5F6"></div>Campeonato</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVAILABILITY -->
+      <div class="page" id="p-availability">
+        <div class="card-hdr" style="margin-bottom:1rem">
+          <div><div class="card-title">Disponibilidad por Cancha</div><div class="card-sub">Click en un bloque para editar la reserva</div></div>
+          <input type="date" id="avail-date" style="width:180px" onchange="renderAvailability()"/>
+        </div>
+        <div class="tl-wrap" id="tl-wrap"></div>
+      </div>
+
+      <!-- COURTS -->
+      <div class="page" id="p-courts">
+        <div class="card-hdr">
+          <div><h2 style="font-size:1.6rem;color:var(--white)">Gestión de Canchas</h2><div class="card-sub">Los cambios se reflejan en el sitio al instante.</div></div>
+          <button class="btn btn-g" onclick="addCourt()">+ Nueva Cancha</button>
+        </div>
+        <div class="item-list" id="courts-list"></div>
+      </div>
+
+      <!-- TIPOS DE RESERVA -->
+      <div class="page" id="p-eventTypes">
+        <div class="card-hdr">
+          <div><h2 style="font-size:1.6rem;color:var(--white)">Tipos de Reserva</h2><div class="card-sub">Alquiler, Campeonato, Otro y más opciones personalizadas.</div></div>
+          <button class="btn btn-gd" onclick="addEvent()">+ Nuevo Tipo de Reserva</button>
+        </div>
+        <div class="item-list" id="events-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RESERVATION EDIT -->
+<div class="modal-overlay hidden" id="m-res">
+  <div class="modal">
+    <div class="mh"><span class="mt">✏️ Editar Reserva</span><button class="mc" onclick="closeModal('m-res')">×</button></div>
+    <div class="fr"><div class="fg"><label for="er-name">Nombre</label><input type="text" id="er-name"/></div><div class="fg"><label for="er-phone">Teléfono</label><input type="tel" id="er-phone"/></div></div>
+    <div class="fr"><div class="fg"><label for="er-date">Fecha</label><input type="date" id="er-date"/></div><div class="fg"><label for="er-time">Hora</label><input type="time" id="er-time"/></div></div>
+    <div class="fr">
+      <div class="fg"><label for="er-dur">Duración</label><select id="er-dur"><option value="1">1 Hora</option><option value="2">2 Horas</option><option value="3">3 Horas</option></select></div>
+      <div class="fg"><label for="er-pay">Pago</label><select id="er-pay"><option value="efectivo">Efectivo</option><option value="yape">Yape</option><option value="plin">Plin</option><option value="transferencia">Transferencia</option><option value="por confirmar">Por confirmar</option></select></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label for="er-status">Estado</label><select id="er-status">
+        <option value="confirmed">Confirmado</option>
+        <option value="pending">Pendiente</option>
+        <option value="cancelled">Cancelado</option>
+      </select></div>
+      <div class="fg"><label for="er-price">Total (S/.)</label><input type="number" id="er-price" min="0"/></div>
+    </div>
+    <div class="fg"><label for="er-notes">Notas</label><textarea id="er-notes" rows="2"></textarea></div>
+    <button class="btn btn-g btn-fw" id="er-save" onclick="saveReservation()">Guardar Cambios</button>
+    <button class="btn btn-red btn-fw" onclick="deleteReservation(A.editId)" style="margin-top:1rem;">🗑️ Eliminar Reserva</button>
+  </div>
+</div>
+
+<!-- MODAL COURT -->
+<div class="modal-overlay hidden" id="m-court">
+  <div class="modal">
+    <div class="mh"><span class="mt" id="c-modal-title">Nueva Cancha</span><button class="mc" onclick="closeModal('m-court')">×</button></div>
+    <div class="fr">
+      <div class="fg"><label for="c-name">Nombre</label><input type="text" id="c-name" placeholder="Ej: Fútbol Sala"/></div>
+      <div class="fg"><label for="c-emoji">Emoji</label><input type="text" id="c-emoji" value="⚽" maxlength="4" style="text-align:center;font-size:1.4rem"/></div>
+    </div>
+    <div class="fg"><label for="c-desc">Descripción</label><textarea id="c-desc" rows="2" placeholder="Descripción breve..."></textarea></div>
+    <div class="fr">
+      <div class="fg"><label for="c-p1">Precio 1h (S/.)</label><input type="number" id="c-p1" min="0"/></div>
+      <div class="fg"><label for="c-p2">Precio 2h (S/.)</label><input type="number" id="c-p2" min="0"/></div>
+    </div>
+    <div style="display:flex;gap:1.5rem;margin-bottom:1rem">
+      <div class="toggle-wrap" onclick="toggleField('c-disc','tg-disc')">
+        <div class="toggle-track" id="tg-disc"><div class="toggle-thumb"></div></div>
+        <span class="toggle-lbl">Descuento en 2h</span>
+        <input type="checkbox" id="c-disc" class="hidden"/>
+      </div>
+      <div class="toggle-wrap" onclick="toggleField('c-feat','tg-feat')">
+        <div class="toggle-track" id="tg-feat"><div class="toggle-thumb"></div></div>
+        <span class="toggle-lbl">Popular</span>
+        <input type="checkbox" id="c-feat" class="hidden"/>
+      </div>
+    </div>
+    <button class="btn btn-g btn-fw" onclick="saveCourtModal()">Guardar</button>
+  </div>
+</div>
+
+<!-- MODAL TIPO DE RESERVA -->
+<div class="modal-overlay hidden" id="m-event">
+  <div class="modal">
+    <div class="mh"><span class="mt" id="e-modal-title">Nuevo Tipo de Reserva</span><button class="mc" onclick="closeModal('m-event')">×</button></div>
+    <div class="fr">
+      <div class="fg"><label for="e-name">Nombre</label><input type="text" id="e-name" placeholder="Alquiler, Campeonato, Cumpleaños..."/></div>
+      <div class="fg"><label for="e-emoji">Emoji</label><input type="text" id="e-emoji" value="⚽" maxlength="4" style="text-align:center;font-size:1.4rem"/></div>
+    </div>
+    <div class="fg"><label for="e-desc">Descripción</label><textarea id="e-desc" rows="2"></textarea></div>
+    <div class="fr">
+      <div class="fg"><label for="e-price">Precio base (S/.)</label><input type="number" id="e-price" min="0"/></div>
+      <div class="fg"><label for="e-color">Color</label><input type="color" id="e-color" value="#FFD600" style="height:42px;padding:.3rem"/></div>
+    </div>
+    <div class="toggle-wrap" style="margin-bottom:1rem" onclick="toggleField('e-active','tg-eact')">
+      <div class="toggle-track on" id="tg-eact"><div class="toggle-thumb"></div></div>
+      <span class="toggle-lbl">Activo</span>
+      <input type="checkbox" id="e-active" class="hidden" checked/>
+    </div>
+    <button class="btn btn-g btn-fw" onclick="saveEventModal()">Guardar</button>
+  </div>
+</div>
+
+<script type="module">
+import { COL, FS, AUTH, UTIL } from "./firebase.js";
+
+const A = { user:null, courts:[], events:[], reserves:[], competition:null, page:"dashboard", calDate:new Date(), editId:null };
+
+// AUTH
+AUTH.onChange(user => {
+  A.user = user;
+  if (user) {
+    document.getElementById("user-email").textContent = user.email;
+    document.getElementById("login-page").style.display = "none";
+    document.getElementById("admin-app").classList.add("show");
+    loadAll();
+  } else {
+    document.getElementById("login-page").style.display = "flex";
+    document.getElementById("admin-app").classList.remove("show");
+  }
+});
+
+window.doLogin = async function() {
+  const email = document.getElementById("login-email").value.trim();
+  const pass = document.getElementById("login-pass").value;
+  const err = document.getElementById("login-err");
+  const btn = document.getElementById("login-btn");
+  err.classList.add("hidden");
+  if (!email || !pass) { err.textContent = "Por favor completa ambos campos."; err.classList.remove("hidden"); return; }
+  btn.disabled = true; btn.textContent = "Ingresando...";
+  try {
+    await AUTH.login(email, pass);
+  } catch(e) {
+    const msgs = { "auth/wrong-password":"Contraseña incorrecta.", "auth/user-not-found":"Usuario no encontrado.", "auth/invalid-credential":"Credenciales inválidas.", "auth/too-many-requests":"Demasiados intentos. Espera un momento." };
+    err.textContent = msgs[e.code] || `Error: ${e.message}`;
+    err.classList.remove("hidden");
+    btn.disabled = false; btn.textContent = "🔐 Iniciar Sesión";
+  }
+};
+
+document.addEventListener("keydown", e => { if (e.key === "Enter" && document.getElementById("login-page").style.display !== "none") doLogin(); });
+
+window.doLogout = async function() {
+  if (!confirm("¿Cerrar sesión?")) return;
+  await AUTH.logout();
+};
+
+// NAVIGATION
+window.go = function(page) {
+  A.page = page;
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.page === page));
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(`p-${page}`)?.classList.add("active");
+  const titles = { dashboard:"DASHBOARD", reservations:"RESERVAS", calendar:"CALENDARIO", availability:"DISPONIBILIDAD", courts:"CANCHAS", eventTypes:"TIPOS DE RESERVA" };
+  document.getElementById("page-title").textContent = titles[page] || page.toUpperCase();
+  const renders = { dashboard:renderDash, reservations:renderReservations, calendar:renderAdminCal, availability:renderAvailability, courts:renderCourts, eventTypes:renderAdminEvents };
+  renders[page]?.();
+};
+
+document.querySelectorAll(".nav-item").forEach(n => n.onclick = () => go(n.dataset.page));
+
+function loadAll() {
+  FS.listen(COL.courts, d => { A.courts = d; if (A.page==="dashboard") renderDash(); if (A.page==="courts") renderCourts(); updateBadge(); }, "order");
+  FS.listen(COL.eventTypes, d => { A.events = d; if (A.page==="dashboard") renderDash(); if (A.page==="eventTypes") renderAdminEvents(); updateBadge(); }, "order");
+  FS.listenAll(COL.reservations, d => { A.reserves = d; updateBadge(); refresh(); });
+  FS.listenAll(COL.competitions, d => { A.competition = d[0] || null; });
+}
+
+function refresh() {
+  const renders = { dashboard:renderDash, reservations:renderReservations, calendar:renderAdminCal, availability:renderAvailability };
+  renders[A.page]?.();
+}
+
+function updateBadge() {
+  const pend = A.reserves.filter(r => r.status === "pending").length;
+  const badge = document.getElementById("res-badge");
+  badge.textContent = pend;
+  badge.classList.toggle("hidden", pend === 0);
+}
+
+// DASHBOARD
+function renderDash() {
+  const today = UTIL.today();
+  const todayR = A.reserves.filter(r => r.date === today);
+  document.getElementById("d-total").textContent = A.reserves.length;
+  document.getElementById("d-today").textContent = todayR.length;
+  document.getElementById("d-rev").textContent = "S/. " + todayR.reduce((s,r) => s + (r.total || 0), 0);
+  document.getElementById("d-pend").textContent = A.reserves.filter(r => r.status === "pending").length;
+  document.getElementById("d-courts").textContent = A.courts.filter(c => c.active).length;
+  document.getElementById("d-evts").textContent = A.events.filter(e => e.active).length;
+  const recent = [...A.reserves].sort((a,b) => b.date?.localeCompare(a.date)).slice(0,8);
+  document.getElementById("dash-tbody").innerHTML = recent.map(r => {
+    const court = A.courts.find(c => c.id === r.courtId) || { name: r.courtId };
+    return `<tr><td>${r.name||"–"}</td><td>${UTIL.formatDate(r.date)}</td><td>${r.time||"–"}</td><td>${court.name}</td><td>S/. ${r.total||0}</td><td>${statusBadge(r.status)}</td></tr>`;
+  }).join("") || `<tr><td colspan="6" style="text-align:center;color:var(--gray);padding:1.5rem">Sin reservas aún</td></tr>`;
+}
+
+function statusBadge(s) {
+  const map = { confirmed:["b-ok","Confirmado"], pending:["b-pend","Pendiente"], cancelled:["b-cancel","Cancelado"] };
+  const [cls,txt] = map[s] || ["b-pend",s||"–"];
+  return `<span class="badge ${cls}">${txt}</span>`;
+}
+
+// RESERVATIONS
+window.renderReservations = function() {
+  const search = document.getElementById("rf-search").value.toLowerCase();
+  const date = document.getElementById("rf-date").value;
+  const type = document.getElementById("rf-type").value;
+  let filtered = A.reserves.filter(r => {
+    if (search && !r.name?.toLowerCase().includes(search)) return false;
+    if (date && r.date !== date) return false;
+    if (type && r.type !== type) return false;
+    return true;
+  }).sort((a,b) => b.date?.localeCompare(a.date));
+  document.getElementById("res-count").textContent = filtered.length;
+  const typeLabels = { rental:"⚽ Alquiler", tournament:"🏆 Campeonato", other:"✏️ Otro" };
+  document.getElementById("res-tbody").innerHTML = filtered.map(r => {
+    const court = A.courts.find(c => c.id === r.courtId) || { emoji:"🏟️", name: r.courtId };
+    const typeLabel = r.type === "other"
+      ? `✏️ ${r.customType || "Otro"}`
+      : (typeLabels[r.type] || r.type || "–");
+    const totalDisplay = r.type === "other" ? `<span style="color:var(--gold);font-size:.75rem">A coordinar</span>` : `S/. ${r.total||0}`;
+    return `<tr>
+      <td>${r.name||"–"}</td>
+      <td><a href="tel:${r.phone}" style="color:var(--green)">${r.phone||"–"}</a></td>
+      <td>${UTIL.formatDate(r.date)}</td>
+      <td>${r.time||"–"}</td>
+      <td>${court.emoji} ${court.name}<br><span style="font-size:.72rem;color:var(--gray)">${typeLabel}</span></td>
+      <td>${totalDisplay}</td>
+      <td>${statusBadge(r.status)}</td>
+      <td>
+        <button class="btn btn-gh btn-sm" onclick="openReservationModal('${r.id}')">✏️ Editar</button>
+        <button class="btn btn-red btn-sm" onclick="deleteReservation('${r.id}')">🗑️ Eliminar</button>
+      </td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="8" style="text-align:center;color:var(--gray);padding:1.5rem">Sin resultados</td></tr>`;
+  updateSidePanel();
+};
+
+window.updateSidePanel = function() {
+  const d = document.getElementById("side-date-filter").value || UTIL.today();
+  document.getElementById("side-today-lbl").textContent = UTIL.formatDateLong(d);
+  const dayR = A.reserves.filter(r => r.date === d).sort((a,b) => a.time?.localeCompare(b.time));
+  document.getElementById("side-today-count").textContent = dayR.length;
+  document.getElementById("side-today-rev").textContent = "S/. " + dayR.reduce((s,r) => s + (r.total||0), 0);
+  document.getElementById("side-today-pend").textContent = dayR.filter(r => r.status==="pending").length;
+  const list = document.getElementById("side-res-list");
+  list.innerHTML = dayR.map(r => {
+    const court = A.courts.find(c => c.id === r.courtId) || { emoji:"🏟️", name: r.courtId };
+    const end = UTIL.timeAdd(r.time, r.duration || 1);
+    return `<div class="sp-item" onclick="openReservationModal('${r.id}')">
+      <div class="sp-time">${r.time} - ${end}</div>
+      <div class="sp-info">${court.emoji} ${court.name} · ${r.name} · ${statusBadge(r.status)}</div>
+    </div>`;
+  }).join("") || `<div style="color:var(--gray);font-size:.8rem;text-align:center;padding:1.2rem">📋 Sin reservas este día</div>`;
+};
+
+// ELIMINAR RESERVA
+window.deleteReservation = async function(id) {
+  if (!confirm("¿Seguro que quieres eliminar esta reserva? No se puede recuperar.")) return;
+  
+  try {
+    await FS.delete(COL.reservations, id);
+    alert("Reserva eliminada correctamente 🗑️");
+  } catch (e) {
+    console.error("Error al eliminar:", e);
+    alert("Hubo un problema... revisa la consola 😔");
+  }
+};
+
+// CALENDAR
+let acalDate = new Date();
+function renderAdminCal() {
+  const months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  document.getElementById("acal-label").textContent = `${months[acalDate.getMonth()]} ${acalDate.getFullYear()}`;
+  const days = ["Lu","Ma","Mi","Ju","Vi","Sa","Do"];
+  let html = days.map(d => `<div class="adcal-hdr">${d}</div>`).join("");
+  const first = new Date(acalDate.getFullYear(), acalDate.getMonth(), 1);
+  let startDay = first.getDay() - 1; if (startDay < 0) startDay = 6;
+  for (let i = 0; i < startDay; i++) html += `<div class="adcal-day"></div>`;
+  const daysInMonth = new Date(acalDate.getFullYear(), acalDate.getMonth() + 1, 0).getDate();
+  const today = UTIL.today();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dStr = `${acalDate.getFullYear()}-${String(acalDate.getMonth()+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const rsvs = A.reserves.filter(r => r.date === dStr);
+    const isToday = dStr === today;
+    const hasR = rsvs.length > 0;
+    let dots = "";
+    if (rsvs.some(r => r.type==="rental")) dots += `<div class="adcal-dot" style="background:#00C853"></div>`;
+    if (rsvs.some(r => r.type==="other")) dots += `<div class="adcal-dot" style="background:#FFD600"></div>`;
+    if (rsvs.some(r => r.type==="tournament")) dots += `<div class="adcal-dot" style="background:#64B5F6"></div>`;
+    html += `<div class="adcal-day${hasR?" has":""}${isToday?" today":""}" onclick="${hasR?`showCalDay('${dStr}')`:""}" title="${rsvs.length} reserva(s)">
+      <span class="daynum">${d}</span>
+      <div style="display:flex;gap:2px">${dots}</div>
+    </div>`;
+  }
+  document.getElementById("acal-grid").innerHTML = html;
+}
+
+window.showCalDay = function(date) {
+  go("reservations");
+  setTimeout(() => { document.getElementById("rf-date").value = date; renderReservations(); }, 100);
+};
+
+document.getElementById("acal-prev").onclick = () => { acalDate.setMonth(acalDate.getMonth()-1); renderAdminCal(); };
+document.getElementById("acal-next").onclick = () => { acalDate.setMonth(acalDate.getMonth()+1); renderAdminCal(); };
+
+// AVAILABILITY
+window.renderAvailability = function() {
+  const date = document.getElementById("avail-date").value || UTIL.today();
+  const wrap = document.getElementById("tl-wrap");
+  const START = 6, END = 23, TOTAL = (END - START) * 60;
+  wrap.innerHTML = A.courts.filter(c => c.active).map(court => {
+    const rsvs = A.reserves.filter(r => r.date === date && r.courtId === court.id);
+    let hours = "";
+    for (let h = START; h <= END; h++) {
+      const pct = ((h - START) / (END - START)) * 100;
+      hours += `<div class="tl-hour" style="left:${pct}%"><span>${String(h).padStart(2,"0")}:00</span></div>`;
+    }
+    const blocks = rsvs.map(r => {
+      const [rh,rm] = r.time.split(":").map(Number);
+      const start = (rh * 60 + rm) - START * 60;
+      const dur = (r.duration || 1) * 60;
+      const left = (start / TOTAL) * 100;
+      const width = (dur / TOTAL) * 100;
+      const colors = { rental:"#00C853", other:"#FFD600", tournament:"#64B5F6" };
+      const bg = colors[r.type] || "#00C853";
+      return `<div class="tl-block" style="left:${left}%;width:${width}%;background:${bg}20;border:1px solid ${bg}50;color:${bg}" onclick="openReservationModal('${r.id}')" title="${r.name} | ${r.time} | ${r.duration}h">
+        ${r.name} ${r.time}
+      </div>`;
+    }).join("");
+    return `<div class="tl-court">
+      <div class="tl-name">${court.emoji} ${court.name}</div>
+      <div class="tl-scroll"><div class="tl-row">${hours}${blocks}</div></div>
+    </div>`;
+  }).join("") || `<div class="card" style="text-align:center;color:var(--gray);padding:2rem">Sin canchas activas</div>`;
+};
+document.getElementById("avail-date").value = UTIL.today();
+
+// COURTS PAGE
+window.renderCourts = function() {
+  document.getElementById("courts-list").innerHTML = A.courts.map(c => `
+    <div class="item-card">
+      <div>
+        <div class="ic-emoji">${c.emoji}</div>
+        <div class="ic-name">${c.name}</div>
+        <div class="ic-desc">${c.desc}</div>
+        <div class="ic-prices">1h: <span>S/. ${c.p1}</span> &nbsp; 2h: <span>S/. ${c.p2}</span>${c.disc?" (con descuento)":""}</div>
+        <div class="ic-badges">
+          ${c.featured?`<span class="ic-badge pop">⭐ Popular</span>`:""}
+          <span class="ic-badge ${c.active?"act":"inact"}">${c.active?"🟢 Activo":"⚫ Inactivo"}</span>
+        </div>
+      </div>
+      <div class="ic-actions">
+        <button class="btn btn-gh btn-sm" onclick="openCourtModal('${c.id}')">✏️ Editar</button>
+        <button class="btn btn-red btn-sm" onclick="deleteCourt('${c.id}')">🗑️ Eliminar</button>
+      </div>
+    </div>
+  `).join("") || `<div style="text-align:center;color:var(--gray);padding:2rem">Sin canchas. Añade la primera.</div>`;
+};
+
+window.addCourt = function() {
+  A.editId = null;
+  document.getElementById("c-modal-title").textContent = "Nueva Cancha";
+  ["c-name","c-desc"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("c-emoji").value = "⚽";
+  document.getElementById("c-p1").value = "";
+  document.getElementById("c-p2").value = "";
+  setToggle("c-disc","tg-disc",false);
+  setToggle("c-feat","tg-feat",false);
+  openModal("m-court");
+};
+
+window.openCourtModal = function(id) {
+  const c = A.courts.find(x => x.id === id);
+  if (!c) return;
+  A.editId = id;
+  document.getElementById("c-modal-title").textContent = "Editar Cancha";
+  document.getElementById("c-name").value = c.name;
+  document.getElementById("c-emoji").value = c.emoji;
+  document.getElementById("c-desc").value = c.desc;
+  document.getElementById("c-p1").value = c.p1;
+  document.getElementById("c-p2").value = c.p2;
+  setToggle("c-disc","tg-disc",!!c.disc);
+  setToggle("c-feat","tg-feat",!!c.featured);
+  openModal("m-court");
+};
+
+window.saveCourtModal = async function() {
+  const name = document.getElementById("c-name").value.trim();
+  const p1 = parseFloat(document.getElementById("c-p1").value);
+  const p2 = parseFloat(document.getElementById("c-p2").value);
+  if (!name || isNaN(p1) || isNaN(p2)) { alert("Por favor completa nombre y precios."); return; }
+  const data = {
+    name, emoji: document.getElementById("c-emoji").value,
+    desc: document.getElementById("c-desc").value,
+    p1, p2, disc: document.getElementById("c-disc").checked,
+    featured: document.getElementById("c-feat").checked, active: true
+  };
+  if (A.editId) {
+    await FS.update(COL.courts, A.editId, data);
+  } else {
+    data.order = A.courts.length;
+    await FS.add(COL.courts, data);
+  }
+  closeModal("m-court");
+};
+
+window.deleteCourt = async function(id) {
+  if (!confirm("¿Eliminar esta cancha? Esta acción no se puede deshacer.")) return;
+  await FS.delete(COL.courts, id);
+};
+
+// TIPOS DE RESERVA PAGE
+window.renderAdminEvents = function() {
+  document.getElementById("events-list").innerHTML = A.events.map(e => `
+    <div class="item-card" style="border-color:${e.color}40">
+      <div>
+        <div class="ic-emoji">${e.emoji}</div>
+        <div class="ic-name">${e.name}</div>
+        <div class="ic-desc">${e.desc}</div>
+        <div class="ic-prices">Precio base: <span style="color:${e.color}">S/. ${e.price}</span></div>
+        <div class="ic-badges">
+          <span class="ic-badge ${e.active?"act":"inact"}">${e.active?"🟢 Activo":"⚫ Inactivo"}</span>
+        </div>
+      </div>
+      <div class="ic-actions">
+        <button class="btn btn-gh btn-sm" onclick="openEventModal('${e.id}')">✏️ Editar</button>
+        <button class="btn btn-red btn-sm" onclick="deleteEvent('${e.id}')">🗑️ Eliminar</button>
+      </div>
+    </div>
+  `).join("") || `<div style="text-align:center;color:var(--gray);padding:2rem">Sin tipos de reserva aún. Agrega el primero.</div>`;
+};
+
+window.addEvent = function() {
+  A.editId = null;
+  document.getElementById("e-modal-title").textContent = "Nuevo Tipo de Reserva";
+  ["e-name","e-desc"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("e-emoji").value = "⚽";
+  document.getElementById("e-price").value = "";
+  document.getElementById("e-color").value = "#FFD600";
+  setToggle("e-active","tg-eact",true);
+  openModal("m-event");
+};
+
+window.openEventModal = function(id) {
+  const e = A.events.find(x => x.id === id);
+  if (!e) return;
+  A.editId = id;
+  document.getElementById("e-modal-title").textContent = "Editar Tipo de Reserva";
+  document.getElementById("e-name").value = e.name;
+  document.getElementById("e-emoji").value = e.emoji;
+  document.getElementById("e-desc").value = e.desc;
+  document.getElementById("e-price").value = e.price;
+  document.getElementById("e-color").value = e.color;
+  setToggle("e-active","tg-eact",!!e.active);
+  openModal("m-event");
+};
+
+window.saveEventModal = async function() {
+  const name = document.getElementById("e-name").value.trim();
+  const price = parseFloat(document.getElementById("e-price").value);
+  if (!name || isNaN(price)) { alert("Por favor completa nombre y precio."); return; }
+  const data = {
+    name, emoji: document.getElementById("e-emoji").value,
+    desc: document.getElementById("e-desc").value,
+    price, color: document.getElementById("e-color").value,
+    active: document.getElementById("e-active").checked
+  };
+  if (A.editId) {
+    await FS.update(COL.eventTypes, A.editId, data);
+  } else {
+    data.order = A.events.length;
+    await FS.add(COL.eventTypes, data);
+  }
+  closeModal("m-event");
+};
+
+window.deleteEvent = async function(id) {
+  if (!confirm("¿Eliminar este tipo de reserva?")) return;
+  await FS.delete(COL.eventTypes, id);
+};
+
+// RESERVATION MODAL
+window.openReservationModal = function(id) {
+  const r = A.reserves.find(x => x.id === id);
+  if (!r) return;
+  A.editId = id;
+  document.getElementById("er-name").value = r.name || "";
+  document.getElementById("er-phone").value = r.phone || "";
+  document.getElementById("er-date").value = r.date || "";
+  document.getElementById("er-time").value = r.time || "";
+  document.getElementById("er-dur").value = r.duration || 1;
+  document.getElementById("er-pay").value = r.payment || "efectivo";
+  document.getElementById("er-status").value = r.status || "pending";
+  document.getElementById("er-price").value = r.total || 0;
+  document.getElementById("er-notes").value = r.notes || "";
+  openModal("m-res");
+};
+
+window.saveReservation = async function() {
+  if (!A.editId) return;
+  const data = {
+    name: document.getElementById("er-name").value.trim(),
+    phone: document.getElementById("er-phone").value.trim(),
+    date: document.getElementById("er-date").value,
+    time: document.getElementById("er-time").value,
+    duration: parseInt(document.getElementById("er-dur").value),
+    payment: document.getElementById("er-pay").value,
+    status: document.getElementById("er-status").value,
+    total: parseFloat(document.getElementById("er-price").value) || 0,
+    notes: document.getElementById("er-notes").value.trim()
+  };
+  await FS.update(COL.reservations, A.editId, data);
+  closeModal("m-res");
+  refresh(); // Actualiza la tabla en tiempo real
+};
+
+// MODAL HELPERS
+window.openModal = (id) => document.getElementById(id)?.classList.remove("hidden");
+window.closeModal = (id) => document.getElementById(id)?.classList.add("hidden");
+document.querySelectorAll(".modal-overlay").forEach(m => m.onclick = e => { if (e.target === m) m.classList.add("hidden"); });
+
+// TOGGLE HELPERS
+window.toggleField = function(checkId, trackId) {
+  const cb = document.getElementById(checkId);
+  cb.checked = !cb.checked;
+  document.getElementById(trackId).classList.toggle("on", cb.checked);
+};
+
+function setToggle(checkId, trackId, val) {
+  document.getElementById(checkId).checked = val;
+  document.getElementById(trackId).classList.toggle("on", val);
+}
+
+// INIT
+function init() {
+  document.getElementById("avail-date").value = UTIL.today();
+  document.getElementById("side-date-filter").value = UTIL.today();
+}
+init();
+
+// Expose for HTML attributes
+window.UTIL = UTIL;
+</script>
+</body>
+</html>

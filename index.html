@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cancha Pro – Reserva tu Cancha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#00C853;--green-dk:#007A33;--green-dp:#003D1A;
+  --lime:#AEEA00;--gold:#FFD600;--red:#FF3D00;
+  --white:#F0FFF4;--gray:#7A9B85;--coal:#161E19;
+  --dark:#0D1510;--black:#080C09;
+  --card-bg:rgba(255,255,255,.04);--card-border:rgba(255,255,255,.08);
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--black);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;transition:opacity .5s}
+#loader.gone{opacity:0;pointer-events:none}
+.ld-spin{width:52px;height:52px;border:3px solid rgba(0,200,83,.2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite}
+.ld-txt{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.15em;color:var(--white)}
+.ld-txt span{color:var(--green)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.4rem;border-radius:.7rem;font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;border:none;text-decoration:none;transition:all .25s;white-space:nowrap}
+.btn-primary{background:var(--green);color:#000}
+.btn-primary:hover{background:var(--lime);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.25)}
+.btn-outline:hover{border-color:var(--green);color:var(--green)}
+.btn-wa{background:#25D366;color:#fff}
+.btn-wa:hover{background:#1ebe5c;transform:translateY(-1px)}
+.btn-gold{background:var(--gold);color:#000}
+.btn-gold:hover{background:#e6c200}
+.btn-sm{padding:.45rem 1rem;font-size:.8rem}
+.btn-lg{padding:.85rem 1.8rem;font-size:.95rem}
+.btn-full{width:100%;justify-content:center}
+
+/* LAYOUT */
+.sec-wrap{padding:5rem 2rem}
+.sec-wrap.alt{background:rgba(0,0,0,.3)}
+.sec-inner{max-width:1200px;margin:0 auto}
+.sec-hdr{text-align:center;margin-bottom:3rem}
+.eye-lbl{display:inline-block;background:rgba(0,200,83,.12);border:1px solid rgba(0,200,83,.3);color:var(--green);font-size:.75rem;font-weight:700;letter-spacing:.1em;padding:.35rem .9rem;border-radius:99px;margin-bottom:1.5rem;text-transform:uppercase}
+.sec-hdr h2{font-size:clamp(2.2rem,5vw,3.8rem);line-height:1;color:var(--white);margin-bottom:.8rem}
+.sec-hdr p{color:var(--gray);font-size:.95rem;max-width:520px;margin:0 auto;line-height:1.7}
+
+/* ALERTS */
+.hidden{display:none!important}
+.alert{padding:1rem 1.2rem;border-radius:.8rem;font-size:.85rem;margin:.8rem 0;display:flex;gap:.6rem;align-items:flex-start}
+.alert.hidden{display:none!important}
+.alert-error{background:rgba(255,61,0,.1);border:1px solid rgba(255,61,0,.3);color:#ff8a65}
+.alert-success{background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.25);color:var(--green)}
+.alert-info{background:rgba(100,181,246,.08);border:1px solid rgba(100,181,246,.3);color:#90caf9}
+
+/* REVEAL ANIMATION */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s}
+.reveal.in{opacity:1;transform:none}
+
+/* ===== NAVBAR ===== */
+#navbar{position:fixed;top:0;left:0;right:0;z-index:800;height:68px;padding:0 2rem;background:rgba(8,12,9,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(0,200,83,.12);display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.nav-icon{width:36px;height:36px;background:var(--green);border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.nav-name{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.08em}
+.nav-name span{color:var(--green)}
+.nav-links{display:flex;align-items:center;gap:1.8rem}
+.nav-links a{color:var(--gray);font-size:.85rem;font-weight:600;text-decoration:none;transition:color .2s;letter-spacing:.03em}
+.nav-links a:hover{color:var(--green)}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:.4rem;background:none;border:none}
+.burger span{width:22px;height:2px;background:var(--white);transition:all .3s;display:block}
+#mob-nav{display:none;position:fixed;top:68px;left:0;right:0;background:rgba(8,12,9,.97);border-bottom:1px solid rgba(0,200,83,.15);padding:1rem 2rem;flex-direction:column;gap:.2rem;z-index:799}
+#mob-nav.open{display:flex}
+#mob-nav a{color:var(--gray);font-size:.9rem;font-weight:600;padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none}
+#mob-nav a:hover{color:var(--green)}
+
+/* ===== HERO ===== */
+#hero{min-height:100vh;padding-top:68px;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:
+  radial-gradient(ellipse 80% 60% at 65% 55%, rgba(0,122,51,.32), transparent),
+  radial-gradient(ellipse 50% 40% at 15% 75%, rgba(0,77,32,.38), transparent);
+  pointer-events:none}
+.hero-texture{position:absolute;inset:0;opacity:.04;background-image:
+  repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(255,255,255,1) 60px),
+  repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,1) 60px),
+  radial-gradient(circle at 50% 50%,transparent 60px,rgba(255,255,255,.8) 61px,rgba(255,255,255,.8) 62px,transparent 63px);
+  pointer-events:none}
+.hero-inner{position:relative;max-width:1200px;margin:0 auto;padding:4rem 2rem}
+.hero-pill{display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,200,83,.12);border:1px solid rgba(0,200,83,.3);padding:.4rem 1rem;border-radius:99px;font-size:.78rem;font-weight:700;color:var(--green);letter-spacing:.05em;margin-bottom:1.5rem;animation:pillPulse 2s ease-in-out infinite}
+@keyframes pillPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,200,83,.3)}50%{box-shadow:0 0 0 6px rgba(0,200,83,0)}}
+.hero-h1{font-size:clamp(4rem,12vw,9rem);line-height:.92;color:var(--white);margin-bottom:1.5rem}
+.hero-h1 .gr{color:var(--green)}
+.hero-h1 .ol{-webkit-text-stroke:2px var(--green);color:transparent}
+.hero-sub{font-size:.95rem;color:var(--gray);line-height:1.7;max-width:480px;margin-bottom:2.5rem;font-family:'Syne',sans-serif}
+.hero-btns{display:flex;flex-wrap:wrap;gap:.8rem;margin-bottom:3rem}
+.hero-stats{display:flex;gap:2.5rem;flex-wrap:wrap}
+.hs-item{display:flex;flex-direction:column}
+.hs-num{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--green);line-height:1}
+.hs-lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);margin-top:.2rem}
+
+/* ===== COURTS ===== */
+#courts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.4rem}
+.court-card{background:var(--card-bg);border:1.5px solid var(--card-border);border-radius:1.5rem;overflow:hidden;transition:all .3s;position:relative}
+.court-card:hover{transform:translateY(-4px);border-color:rgba(0,200,83,.3);box-shadow:0 16px 48px rgba(0,200,83,.08)}
+.court-badge{position:absolute;top:1rem;right:1rem;background:rgba(255,214,0,.18);border:1px solid rgba(255,214,0,.4);color:var(--gold);font-size:.7rem;font-weight:700;padding:.3rem .7rem;border-radius:99px}
+.court-top{font-size:2.8rem;padding:1.2rem;background:rgba(0,200,83,.08);text-align:center}
+.court-body{padding:1.4rem}
+.court-name{font-size:1.1rem;color:var(--white);margin-bottom:.5rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em}
+.court-desc{font-size:.82rem;color:var(--gray);line-height:1.6;margin-bottom:1rem}
+.price-row{display:flex;flex-direction:column;gap:.3rem;margin-bottom:1.2rem}
+.price-item{display:flex;justify-content:space-between;align-items:center;font-size:.85rem}
+.price-item .lbl{color:var(--gray)}
+.price-item .val{color:var(--white);font-weight:700}
+.price-item.deal .val{color:var(--green)}
+.price-item.deal .disc{font-size:.7rem;color:var(--gray);text-decoration:line-through;margin-left:.3rem}
+
+/* ===== RESERVATION FORM ===== */
+#reserve .sec-inner{max-width:1200px}
+.res-layout{display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap}
+.form-card{flex:1;min-width:300px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.5rem;padding:2rem}
+.form-card h3{font-size:1.5rem;color:var(--white);margin-bottom:.3rem}
+.form-sub{font-size:.83rem;color:var(--gray);margin-bottom:1.5rem}
+.step-dots{display:flex;align-items:center;gap:.5rem;margin-bottom:1.8rem}
+.step-dot{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);color:var(--gray);font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .3s;font-family:'Space Mono',monospace}
+.step-dot.active{background:var(--green);color:#000}
+.step-dot.done{background:rgba(0,200,83,.3);color:var(--green)}
+.step-line{flex:1;height:1px;background:rgba(0,200,83,.2)}
+.step{display:none}
+.step.active{display:block}
+.step-title{font-size:1.1rem;color:var(--white);margin-bottom:1.2rem;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em}
+.fg{margin-bottom:1rem}
+label{display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray);margin-bottom:.4rem}
+input,select,textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:.6rem;padding:.7rem .9rem;color:var(--white);font-family:'Syne',sans-serif;font-size:.88rem;transition:border-color .2s;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+select option{background:var(--coal)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.pay-btn{padding:.9rem .6rem;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:.7rem;cursor:pointer;text-align:center;transition:all .2s}
+.pay-btn:hover{border-color:rgba(0,200,83,.4)}
+.pay-btn.sel{background:rgba(0,200,83,.1);border-color:var(--green)}
+.pay-btn .pi{font-size:1.4rem;display:block;margin-bottom:.3rem}
+.pay-btn .pn{font-size:.82rem;font-weight:700;color:var(--white);display:block}
+.pay-btn .ps{font-size:.72rem;color:var(--gray);display:block}
+.sum-rows{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.2rem}
+.sum-row{display:grid;grid-template-columns:1fr 1.5fr;gap:.5rem;align-items:start;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.sum-lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gray)}
+.sum-val{font-size:.9rem;color:var(--white)}
+.price-box{background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.3);padding:1.2rem 1.5rem;border-radius:1rem;margin-bottom:1.2rem}
+.price-line{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;margin-bottom:.4rem;color:var(--gray)}
+.price-total{display:flex;justify-content:space-between;align-items:center;font-size:1.3rem;font-weight:800;color:var(--green);margin-top:.6rem;padding-top:.6rem;border-top:1px solid rgba(0,200,83,.25)}
+.step-btns{display:flex;gap:.8rem;margin-top:1.2rem}
+.step4{text-align:center;padding:.5rem 0}
+.s4-icon{font-size:3rem;background:rgba(0,200,83,.15);border-radius:1rem;padding:1rem 1.5rem;display:inline-block;margin-bottom:1rem}
+.s4-title{font-size:2rem;color:var(--white);margin-bottom:.3rem}
+.s4-sub{font-size:.85rem;color:var(--gray);margin-bottom:1.5rem}
+.conf-num{font-family:'Space Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--green);background:rgba(0,200,83,.1);padding:.8rem 1.2rem;border-radius:.7rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:center;gap:.6rem;cursor:pointer;border:1px solid rgba(0,200,83,.3)}
+.conf-details{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.5rem;text-align:left}
+.conf-row{display:flex;justify-content:space-between;font-size:.85rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.conf-row .cl{color:var(--gray)}
+.conf-row .cv{color:var(--white);font-weight:600}
+
+/* ===== PANEL ===== */
+.panel{flex:1;min-width:280px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.5rem;padding:1.8rem;position:sticky;top:88px}
+.panel h3{font-size:1.3rem;color:var(--white);margin-bottom:.3rem}
+.panel-sub{font-size:.8rem;color:var(--gray);margin-bottom:1.2rem}
+.panel-filters{display:flex;gap:.6rem;margin-bottom:1.2rem}
+.panel-filters input{flex:1}
+#filter-clear{padding:.65rem .9rem}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem}
+.cal-nav button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--gray);padding:.4rem .8rem;border-radius:.5rem;cursor:pointer;font-size:.8rem;transition:all .2s}
+.cal-nav button:hover{border-color:var(--green);color:var(--green)}
+#cal-label{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--white)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:.8rem}
+.cal-day-hdr{text-align:center;font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);padding:.4rem 0}
+.cal-day{min-height:36px;border-radius:.4rem;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.8rem;color:var(--gray);cursor:default;position:relative;transition:all .2s;padding:.2rem}
+.cal-day.has{background:rgba(0,200,83,.12);color:var(--green);cursor:pointer;font-weight:700}
+.cal-day.has:hover{background:rgba(0,200,83,.2)}
+.cal-day.today{border:1px solid rgba(0,200,83,.4)}
+.cal-dot{width:4px;height:4px;border-radius:50%;background:var(--green);margin-top:2px}
+.panel-list{display:flex;flex-direction:column;gap:.5rem;max-height:280px;overflow-y:auto}
+.panel-item{background:rgba(0,200,83,.05);border:1px solid rgba(0,200,83,.12);border-radius:.6rem;padding:.7rem .9rem;font-size:.8rem}
+.pi-time{font-weight:700;color:var(--white);margin-bottom:.2rem;font-family:'Space Mono',monospace}
+.pi-info{color:var(--gray)}
+
+/* ===== EVENTS ===== */
+#events-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.event-card{border-radius:1.2rem;padding:1.8rem;transition:all .3s;cursor:pointer}
+.event-card:hover{transform:scale(1.02)}
+.event-emoji{font-size:2.4rem;margin-bottom:.7rem;display:block}
+.event-name{font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:.5rem}
+.event-desc{font-size:.83rem;color:rgba(255,255,255,.75);line-height:1.5;margin-bottom:.8rem}
+.event-sep{height:1px;background:rgba(255,255,255,.15);margin:.9rem 0}
+.event-price{font-size:1.2rem;font-weight:800;margin-bottom:.3rem}
+.event-price-sub{font-size:.75rem;color:rgba(255,255,255,.6)}
+.events-wa{text-align:center;margin-top:2rem}
+
+/* ===== TOURNAMENT ===== */
+.tourn-banner{display:grid;grid-template-columns:1fr 1.6fr;gap:2rem;align-items:start}
+.tourn-trophy{text-align:center}
+.tourn-trophy .tr-ico{font-size:4rem;animation:trPulse 2s ease-in-out infinite;display:block}
+@keyframes trPulse{0%,100%{opacity:1}50%{opacity:.6}}
+.tourn-info h3{font-size:1.8rem;color:var(--white);margin-bottom:.8rem}
+.tourn-info p{color:var(--gray);font-size:.88rem;line-height:1.6;margin-bottom:1.2rem}
+.tourn-details{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.5rem}
+.td-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:.7rem;padding:.8rem}
+.td-lbl{font-size:.7rem;color:var(--gray);margin-bottom:.2rem;text-transform:uppercase;letter-spacing:.06em}
+.td-val{font-size:.95rem;color:var(--white);font-weight:700}
+.tourn-form{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.2rem;padding:2rem}
+.tourn-form h3{font-size:1.4rem;color:var(--white);margin-bottom:.3rem}
+.tourn-form p{color:var(--gray);font-size:.83rem;margin-bottom:1.2rem}
+.tourn-form .alert-info{margin-top:1rem;padding:.8rem;border-radius:.6rem;background:rgba(100,181,246,.08);border:1px solid rgba(100,181,246,.3);color:#90caf9}
+
+/* ===== PAYMENTS ===== */
+#pay-methods{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:2rem}
+.pay-card{background:rgba(255,255,255,.06);border:1px solid rgba(0,200,83,.2);border-radius:1rem;padding:1.8rem;text-align:center;transition:all .3s}
+.pay-card:hover{transform:translateY(-3px);border-color:var(--green)}
+.pay-card .pc-icon{font-size:2.4rem;margin-bottom:.8rem;display:block}
+.pay-card h4{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.3rem}
+.pay-card p{font-size:.8rem;color:var(--gray)}
+
+/* ===== CONTACT ===== */
+.wa-banner{display:flex;justify-content:space-between;align-items:center;gap:2rem;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.25);padding:2rem;border-radius:1.2rem;flex-wrap:wrap}
+.wa-left{display:flex;gap:1.2rem;align-items:flex-start}
+.wa-left .wa-icon{font-size:2.4rem;flex-shrink:0}
+.wa-info h3{font-size:1.4rem;color:var(--white);margin-bottom:.3rem}
+.wa-info p{font-size:.85rem;color:var(--gray);line-height:1.6}
+
+/* ===== FOOTER ===== */
+footer{background:var(--dark);border-top:1px solid rgba(0,200,83,.1)}
+.footer-inner{max-width:1200px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:3rem}
+.footer-brand p{font-size:.83rem;color:var(--gray);line-height:1.6;margin:1rem 0 1.2rem}
+.footer-col h5{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:var(--white);margin-bottom:1rem}
+.footer-col a{display:block;color:var(--gray);font-size:.85rem;text-decoration:none;padding:.3rem 0;transition:color .2s}
+.footer-col a:hover{color:var(--green)}
+.footer-btm{border-top:1px solid rgba(0,200,83,.12);padding:1.5rem 2rem;text-align:center;display:flex;flex-direction:column;gap:.4rem}
+.footer-btm p{font-size:.78rem;color:var(--gray)}
+.footer-btm .motto{color:var(--green);font-weight:700;letter-spacing:.1em}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .res-layout{flex-direction:column}
+  .panel{position:static}
+  .tourn-banner{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .burger{display:flex}
+  .fr{grid-template-columns:1fr}
+  .pay-grid{grid-template-columns:1fr 1fr}
+  .tourn-details{grid-template-columns:1fr}
+  .wa-banner{flex-direction:column}
+}
+@media(max-width:480px){
+  .hero-stats{gap:1.5rem}
+  .sec-wrap{padding:3.5rem 1.2rem}
+  .form-card{padding:1.4rem}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-spin"></div>
+  <div class="ld-txt">CANCHA <span>PRO</span></div>
+</div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <div class="nav-icon">⚽</div>
+    <div class="nav-name">CANCHA <span>PRO</span></div>
+  </a>
+  <div class="nav-links">
+    <a href="#hero">Inicio</a>
+    <a href="#courts">Canchas</a>
+    <a href="#reserve">Reservar</a>
+    <a href="#events">Eventos</a>
+    <a href="#tournaments">Campeonatos</a>
+    <a href="#payments">Pagos</a>
+    <a href="#" class="btn btn-wa btn-sm" id="nav-wa" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+  </div>
+  <button class="burger" id="burger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE NAV -->
+<nav id="mob-nav">
+  <a href="#hero">Inicio</a>
+  <a href="#courts">Canchas</a>
+  <a href="#reserve">Reservar</a>
+  <a href="#events">Eventos</a>
+  <a href="#tournaments">Campeonatos</a>
+  <a href="#payments">Pagos</a>
+  <a href="#" id="mob-wa" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-texture"></div>
+  <div class="hero-inner">
+    <div class="hero-pill">🟢 Reservas en tiempo real</div>
+    <h1 class="hero-h1">RESERVA<br><span class="gr">TU</span><br><span class="ol">CANCHA</span></h1>
+    <p class="hero-sub">Fútbol Sala, Fútbol 11 y Pádel. Reserva en minutos, juega cuando quieras. Eventos especiales, campeonatos y más.</p>
+    <div class="hero-btns">
+      <a href="#reserve" class="btn btn-primary btn-lg">📅 Reservar Ahora</a>
+      <a href="#courts" class="btn btn-outline btn-lg">Ver Precios</a>
+      <a href="#" class="btn btn-wa btn-lg" id="hero-wa" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs-item">
+        <span class="hs-num" id="stat-courts">3</span>
+        <span class="hs-lbl">Canchas</span>
+      </div>
+      <div class="hs-item">
+        <span class="hs-num">24/7</span>
+        <span class="hs-lbl">Online</span>
+      </div>
+      <div class="hs-item">
+        <span class="hs-num">100%</span>
+        <span class="hs-lbl">Confirmado</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COURTS -->
+<section id="courts" class="sec-wrap alt">
+  <div class="sec-inner">
+    <div class="sec-hdr reveal">
+      <div class="eye-lbl">⚽ Canchas Disponibles</div>
+      <h2>PRECIOS Y TARIFAS</h2>
+      <p>Elige tu cancha y aprovecha el descuento por 2 horas.</p>
+    </div>
+    <div id="courts-grid"></div>
+  </div>
+</section>
+
+<!-- RESERVE -->
+<section id="reserve" class="sec-wrap">
+  <div class="sec-inner">
+    <div class="sec-hdr reveal">
+      <div class="eye-lbl">📅 Reserva en Línea</div>
+      <h2>AGENDA TU TURNO</h2>
+    </div>
+    <div class="res-layout">
+      <!-- FORM -->
+      <div class="form-card reveal">
+        <h3>Nueva Reserva</h3>
+        <p class="form-sub">Completa los datos y confirma tu cancha en segundos.</p>
+        <div class="step-dots">
+          <div class="step-dot active" id="dot-1">1</div>
+          <div class="step-line"></div>
+          <div class="step-dot" id="dot-2">2</div>
+          <div class="step-line"></div>
+          <div class="step-dot" id="dot-3">3</div>
+        </div>
+        <div class="alert alert-error hidden" id="form-err"></div>
+
+        <!-- PASO 1 -->
+        <div class="step active" id="step-1">
+          <div class="step-title">1. Datos Básicos</div>
+          <div class="fg">
+            <label for="f-type">Tipo de Reserva</label>
+            <select id="f-type" disabled>
+              <option value="">Cargando tipos...</option>
+            </select>
+            <div style="font-size:.75rem;color:var(--gray);margin-top:.3rem" id="type-loading">⏳ Cargando desde base de datos...</div>
+          </div>
+          <div class="fg hidden" id="other-wrap">
+            <label for="f-other">¿Qué tipo de reserva necesitas?</label>
+            <input type="text" id="f-other" placeholder="Ej: Entrenamiento, Cumpleaños, Graduación..."/>
+            <div class="alert alert-info" style="margin-top:.5rem;font-size:.78rem">💬 El precio se coordinará directamente con el encargado vía WhatsApp.</div>
+          </div>
+          <div class="fg">
+            <label for="f-court">Cancha</label>
+            <select id="f-court"></select>
+          </div>
+          <div class="fr">
+            <div class="fg">
+              <label for="f-name">Nombre completo</label>
+              <input type="text" id="f-name" placeholder="Tu nombre completo"/>
+            </div>
+            <div class="fg">
+              <label for="f-phone">WhatsApp</label>
+              <input type="tel" id="f-phone" placeholder="+51 999 999 999"/>
+            </div>
+          </div>
+          <div class="fr" id="time-wrap">
+            <div class="fg">
+              <label for="f-date">Fecha</label>
+              <input type="date" id="f-date"/>
+            </div>
+            <div class="fg">
+              <label for="f-dur">Duración</label>
+              <select id="f-dur">
+                <option value="1">1 Hora</option>
+                <option value="2">2 Horas (descuento)</option>
+                <option value="3">3 Horas</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg">
+            <label for="f-time">Hora de Inicio</label>
+            <input type="time" id="f-time" min="06:00" max="23:00"/>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="nextStep()">Continuar →</button>
+        </div>
+
+        <!-- PASO 2 -->
+        <div class="step" id="step-2">
+          <div class="step-title">2. Método de Pago</div>
+          <div class="fg">
+            <label>Selecciona cómo pagarás</label>
+            <div class="pay-grid">
+              <button class="pay-btn sel" data-p="efectivo"><span class="pi">💵</span><span class="pn">Efectivo</span><span class="ps">Paga al llegar</span></button>
+              <button class="pay-btn" data-p="yape"><span class="pi">📱</span><span class="pn">Yape</span><span class="ps">Transferencia digital</span></button>
+              <button class="pay-btn" data-p="plin"><span class="pi">💳</span><span class="pn">Plin</span><span class="ps">Pago instantáneo</span></button>
+              <button class="pay-btn" data-p="transferencia"><span class="pi">🏦</span><span class="pn">Transferencia</span><span class="ps">Banco / CCI</span></button>
+            </div>
+          </div>
+          <div class="fg">
+            <label for="f-notes">Notas adicionales (opcional)</label>
+            <textarea id="f-notes" rows="3" placeholder="Número de jugadores, pedidos especiales..."></textarea>
+          </div>
+          <div class="step-btns">
+            <button class="btn btn-outline" onclick="prevStep()">← Atrás</button>
+            <button class="btn btn-primary" style="flex:1" onclick="nextStep()">Ver Resumen →</button>
+          </div>
+        </div>
+
+        <!-- PASO 3 -->
+        <div class="step" id="step-3">
+          <div class="step-title">3. Confirmar Reserva</div>
+          <div class="sum-rows" id="sum-rows"></div>
+          <div class="price-box" id="price-box"></div>
+          <button class="btn btn-primary btn-lg btn-full" id="submit-btn" onclick="submitReservation()">✅ Confirmar Reserva</button>
+          <button class="btn btn-outline btn-full" style="margin-top:.6rem" onclick="prevStep()">← Cambiar datos</button>
+        </div>
+
+        <!-- PASO 4 (hidden) -->
+        <div class="step" id="step-4">
+          <div class="step4">
+            <div class="s4-icon">✅</div>
+            <div class="s4-title">¡Reserva Confirmada!</div>
+            <p class="s4-sub">Gracias por confiar en Cancha Pro</p>
+            <div class="conf-num" id="conf-num" title="Click para copiar">— — —</div>
+            <div class="conf-details" id="conf-details"></div>
+            <p style="font-size:.8rem;color:var(--gray);margin-bottom:1.2rem">Recibirás un WhatsApp de confirmación en 5 minutos.</p>
+            <a href="#" class="btn btn-wa btn-lg btn-full" id="conf-wa" target="_blank" rel="noopener noreferrer">💬 Confirmar por WhatsApp</a>
+            <button class="btn btn-outline btn-full" style="margin-top:.6rem" onclick="resetForm()">← Hacer otra reserva</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL CALENDARIO -->
+      <div class="panel reveal">
+        <h3>📋 Disponibilidad</h3>
+        <p class="panel-sub">Horas ocupadas por cancha</p>
+        <div class="panel-filters">
+          <input type="date" id="filter-date" placeholder="Filtrar fecha"/>
+          <button class="btn btn-outline btn-sm" id="filter-clear">✕</button>
+        </div>
+        <div class="cal-nav">
+          <button id="cal-prev">← Ant</button>
+          <span id="cal-label"></span>
+          <button id="cal-next">Sig →</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="panel-list" id="panel-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- PAYMENTS -->
+<section id="payments" class="sec-wrap alt">
+  <div class="sec-inner">
+    <div class="sec-hdr reveal">
+      <div class="eye-lbl">💳 Métodos de Pago</div>
+      <h2>PAGA FÁCIL</h2>
+    </div>
+    <div id="pay-methods">
+      <div class="pay-card"><span class="pc-icon">💵</span><h4>Efectivo</h4><p>Paga en caja al llegar</p></div>
+      <div class="pay-card"><span class="pc-icon">📱</span><h4>Yape</h4><p>Transfiere al número del negocio</p></div>
+      <div class="pay-card"><span class="pc-icon">💳</span><h4>Plin</h4><p>Pago instantáneo</p></div>
+      <div class="pay-card"><span class="pc-icon">🏦</span><h4>Transferencia</h4><p>BCP / Interbank / BBVA</p></div>
+    </div>
+    <div class="alert alert-success">✅ <strong>Política:</strong> El pago puede realizarse al llegar. Para eventos y campeonatos se requiere 50% de adelanto.</div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="sec-wrap">
+  <div class="sec-inner">
+    <div class="sec-hdr reveal">
+      <div class="eye-lbl">💬 Contáctanos</div>
+      <h2>ESTAMOS AQUÍ</h2>
+    </div>
+    <div class="wa-banner reveal">
+      <div class="wa-left">
+        <span class="wa-icon">💬</span>
+        <div class="wa-info">
+          <h3>Escríbenos por WhatsApp</h3>
+          <p>Respuesta rápida. Consulta disponibilidad, precios o cualquier duda directamente.</p>
+        </div>
+      </div>
+      <a href="#" class="btn btn-wa btn-lg" id="contact-wa" target="_blank" rel="noopener noreferrer">💬 Abrir WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#hero" class="nav-logo" style="text-decoration:none">
+        <div class="nav-icon">⚽</div>
+        <div class="nav-name">CANCHA <span>PRO</span></div>
+      </a>
+      <p>Tu cancha deportiva de confianza. Reservas online 24/7, eventos especiales y campeonatos todo el año.</p>
+      <a href="#" class="btn btn-wa btn-sm" id="footer-wa" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+    </div>
+    <div class="footer-col">
+      <h5>Servicios</h5>
+      <a href="#courts">⚽ Canchas</a>
+      <a href="#events">🎉 Eventos</a>
+      <a href="#tournaments">🏆 Campeonatos</a>
+    </div>
+    <div class="footer-col">
+      <h5>Info</h5>
+      <a href="#reserve">📅 Reservar</a>
+      <a href="#payments">💳 Pagos</a>
+      <a href="#contact">📞 Contacto</a>
+    </div>
+  </div>
+  <div class="footer-btm">
+    <p>© 2025 Cancha Pro. Todos los derechos reservados.</p>
+    <p class="motto">⚽ JUEGA · GANA · VIVE</p>
+  </div>
+</footer>
+
+<script type="module">
+import { COL, FS, UTIL } from "./firebase.js";
+
+const CFG = {
+  phone: "51916552695",
+  currency: "S/.",
+  wa: {
+    info: "Hola! Quiero consultar... 👋",
+    rental: "Hola! Quisiera reservar una cancha. 🏟️",
+    event: "Hola! Quisiera más información sobre eventos especiales. 🎉",
+    tournament: "Hola! Quisiera más información sobre el campeonato. 🏆"
+  }
+};
+
+const S = { courts: [], events: [], reserves: [], competition: null, step: 1, form: { type: "rental", payment: "efectivo" } };
+
+// SEED
+async function seedIfEmpty() {
+  try {
+    const courtCount = await FS.getCount(COL.courts);
+    if (courtCount === 0) {
+      const courts = [
+        { id:"futsal", name:"Fútbol Sala", emoji:"⚽", desc:"Cancha techada piso sintético premium. 5 vs 5.", p1:60, p2:110, disc:true, featured:true, active:true, order:0 },
+        { id:"futbol11", name:"Fútbol 11", emoji:"🏟️", desc:"Cancha reglamentaria gramado natural. 11 vs 11.", p1:120, p2:220, disc:true, featured:false, active:true, order:1 },
+        { id:"padel", name:"Pádel", emoji:"🎾", desc:"Iluminación nocturna incluida. Alquiler de raquetas.", p1:50, p2:90, disc:true, featured:false, active:true, order:2 }
+      ];
+      for (const c of courts) await FS.set(COL.courts, c.id, c);
+    }
+    const evCount = await FS.getCount(COL.eventTypes);
+    if (evCount === 0) {
+      const evts = [
+        { id:"birthday", name:"Cumpleaños", emoji:"🎂", desc:"Cancha 2h + decoración básica + música. El festejado no paga entrada.", price:200, color:"#FFD600", active:true, order:0 },
+        { id:"party", name:"Fiesta Compartir", emoji:"🎉", desc:"Ideal para grupos. Incluye espacio para mesa de comida y parlantes.", price:180, color:"#4CAF50", active:true, order:1 },
+        { id:"corporate", name:"Corporativo", emoji:"🏢", desc:"Team building deportivo. Actividades y dinámica personalizada.", price:350, color:"#64B5F6", active:true, order:2 },
+        { id:"baby", name:"Baby Shower", emoji:"🍼", desc:"Espacio decorado y seguro para los más pequeños.", price:160, color:"#F48FB1", active:true, order:3 },
+        { id:"graduation", name:"Graduación", emoji:"🎓", desc:"Sonido, iluminación y espacio para banquete.", price:300, color:"#A5D6A7", active:true, order:4 },
+        { id:"kids", name:"Fiesta Infantil", emoji:"🎈", desc:"Inflables, animación y zona segura para niños.", price:220, color:"#FF8A65", active:true, order:5 }
+      ];
+      for (const e of evts) await FS.set(COL.eventTypes, e.id, e);
+    }
+    const compCount = await FS.getCount(COL.competitions);
+    if (compCount === 0) {
+      await FS.set(COL.competitions, "lightning", { id:"lightning", active:true, nextDate:"2025-05-10", fee:150, maxTeams:16, prize:"S/. 2,000", format:"Grupos + Eliminación", description:"Campeonato Relámpago. Inscribe tu equipo y compite por el gran premio." });
+    }
+  } catch(e) {
+    console.warn("Seed skipped:", e.message);
+  }
+}
+
+function renderCourts() {
+  const g = document.getElementById("courts-grid");
+  if (!g) return;
+  const active = S.courts.filter(c => c.active);
+  document.getElementById("stat-courts").textContent = active.length;
+  g.innerHTML = active.map(c => `
+    <div class="court-card reveal">
+      ${c.featured ? `<div class="court-badge">⭐ Popular</div>` : ""}
+      <div class="court-top">${c.emoji}</div>
+      <div class="court-body">
+        <div class="court-name">${c.name}</div>
+        <div class="court-desc">${c.desc}</div>
+        <div class="price-row">
+          <div class="price-item"><span class="lbl">1 hora:</span><span class="val">${CFG.currency} ${c.p1}</span></div>
+          <div class="price-item deal"><span class="lbl">2 horas:</span><span class="val">${CFG.currency} ${c.p2}${c.disc ? ' <span class="disc">ahorra más</span>' : ""}</span></div>
+        </div>
+        <button class="btn btn-primary btn-lg btn-full" onclick="document.getElementById('reserve').scrollIntoView({behavior:'smooth'})">⚽ Reservar</button>
+      </div>
+    </div>
+  `).join("");
+  observeReveal();
+  populateCourtSelect();
+}
+
+function renderEvents() {
+  const g = document.getElementById("events-grid");
+  if (!g) return;
+  g.innerHTML = S.events.filter(e => e.active).map(e => `
+    <div class="event-card reveal" style="background:${e.color}20;border:1px solid ${e.color}50">
+      <span class="event-emoji">${e.emoji}</span>
+      <div class="event-name">${e.name}</div>
+      <div class="event-desc">${e.desc}</div>
+      <div class="event-sep"></div>
+      <div class="event-price" style="color:${e.color}">${CFG.currency} ${e.price}</div>
+      <div class="event-price-sub">(2 horas de cancha)</div>
+      <div style="margin-top:1rem">
+        <a href="${UTIL.wa(CFG.phone, `Hola! Me interesa el evento ${e.name}. 🎉`)}" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">Consultar</a>
+      </div>
+    </div>
+  `).join("");
+  observeReveal();
+}
+
+function renderTournament() {
+  const c = S.competition;
+  const content = document.getElementById("tourn-content");
+  const empty = document.getElementById("tourn-empty");
+  if (!c || !c.active) { content.style.display = "none"; empty.style.display = "block"; return; }
+  content.style.display = "block"; empty.style.display = "none";
+  document.getElementById("tourn-name").textContent = c.description || "Campeonato Relámpago";
+  document.getElementById("tourn-desc").textContent = "Inscribe tu equipo y compite por el gran premio. Formato de grupos con fase eliminatoria.";
+  document.getElementById("tourn-details").innerHTML = `
+    <div class="td-item"><div class="td-lbl">📅 Fecha</div><div class="td-val">${UTIL.formatDate(c.nextDate)}</div></div>
+    <div class="td-item"><div class="td-lbl">🏆 Premio</div><div class="td-val">${c.prize}</div></div>
+    <div class="td-item"><div class="td-lbl">👥 Equipos</div><div class="td-val">Máx ${c.maxTeams}</div></div>
+    <div class="td-item"><div class="td-lbl">📋 Formato</div><div class="td-val">${c.format}</div></div>
+  `;
+}
+
+function populateCourtSelect() {
+  const sel = document.getElementById("f-court");
+  sel.innerHTML = S.courts.filter(c => c.active).map(c => `<option value="${c.id}">${c.emoji} ${c.name}</option>`).join("");
+}
+
+function populateTypeSelect() {
+  const sel = document.getElementById("f-type");
+  const hint = document.getElementById("type-loading");
+  const active = S.events.filter(e => e.active).sort((a, b) => (a.order || 0) - (b.order || 0));
+  if (active.length === 0) return;
+  sel.innerHTML = active.map(e =>
+    `<option value="${e.id}">${e.emoji} ${e.name}</option>`
+  ).join("");
+  sel.disabled = false;
+  if (hint) hint.style.display = "none";
+  S.form.type = sel.value;
+  document.getElementById("other-wrap").classList.toggle("hidden", sel.value !== "other");
+}
+
+// CALENDAR
+let calDate = new Date();
+function renderCalendar() {
+  const filterDate = document.getElementById("filter-date").value;
+  const label = document.getElementById("cal-label");
+  const grid = document.getElementById("cal-grid");
+  const months = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  label.textContent = `${months[calDate.getMonth()]} ${calDate.getFullYear()}`;
+  const days = ["Lu","Ma","Mi","Ju","Vi","Sa","Do"];
+  let html = days.map(d => `<div class="cal-day-hdr">${d}</div>`).join("");
+  const first = new Date(calDate.getFullYear(), calDate.getMonth(), 1);
+  let startDay = first.getDay() - 1; if (startDay < 0) startDay = 6;
+  for (let i = 0; i < startDay; i++) html += `<div class="cal-day"></div>`;
+  const daysInMonth = new Date(calDate.getFullYear(), calDate.getMonth() + 1, 0).getDate();
+  const today = UTIL.today();
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dStr = `${calDate.getFullYear()}-${String(calDate.getMonth()+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const rsvs = S.reserves.filter(r => r.date === dStr);
+    const isToday = dStr === today;
+    const hasRsv = rsvs.length > 0;
+    html += `<div class="cal-day${hasRsv ? " has" : ""}${isToday ? " today" : ""}" onclick="${hasRsv ? `showDayList('${dStr}')` : ""}">
+      ${d}${hasRsv ? `<div class="cal-dot"></div>` : ""}
+    </div>`;
+  }
+  grid.innerHTML = html;
+  if (filterDate) showDayList(filterDate);
+}
+
+function showDayList(date) {
+  const list = document.getElementById("panel-list");
+  const rsvs = S.reserves.filter(r => r.date === date);
+  if (!rsvs.length) { list.innerHTML = `<div style="color:var(--gray);font-size:.82rem;text-align:center;padding:1rem">Sin reservas este día</div>`; return; }
+  const courts = S.courts;
+  list.innerHTML = rsvs.map(r => {
+    const court = courts.find(c => c.id === r.courtId) || { emoji:"🏟️", name: r.courtId };
+    const end = UTIL.timeAdd(r.time, parseInt(r.duration) || 1);
+    return `<div class="panel-item">
+      <div class="pi-time">${r.time} - ${end}</div>
+      <div class="pi-info">${court.emoji} ${court.name} · ${r.name}</div>
+    </div>`;
+  }).join("");
+}
+
+document.getElementById("cal-prev").onclick = () => { calDate.setMonth(calDate.getMonth() - 1); renderCalendar(); };
+document.getElementById("cal-next").onclick = () => { calDate.setMonth(calDate.getMonth() + 1); renderCalendar(); };
+document.getElementById("filter-date").onchange = (e) => { if (e.target.value) showDayList(e.target.value); else renderCalendar(); };
+document.getElementById("filter-clear").onclick = () => { document.getElementById("filter-date").value = ""; renderCalendar(); };
+
+// FORM LOGIC
+const fType = document.getElementById("f-type");
+fType.onchange = () => {
+  S.form.type = fType.value;
+  document.getElementById("other-wrap").classList.toggle("hidden", fType.value !== "other");
+};
+
+const payBtns = document.querySelectorAll(".pay-btn");
+payBtns.forEach(b => b.onclick = () => {
+  payBtns.forEach(x => x.classList.remove("sel"));
+  b.classList.add("sel");
+  S.form.payment = b.dataset.p;
+});
+
+// Set min/max date
+const fd = document.getElementById("f-date");
+fd.min = UTIL.today();
+const maxD = new Date(); maxD.setDate(maxD.getDate() + 60);
+fd.max = maxD.toISOString().split("T")[0];
+
+window.nextStep = function() {
+  const err = document.getElementById("form-err");
+  err.classList.add("hidden");
+  if (S.step === 1) {
+    const name = document.getElementById("f-name").value.trim();
+    const phone = document.getElementById("f-phone").value.trim();
+    const date = document.getElementById("f-date").value;
+    const time = document.getElementById("f-time").value;
+    if (!name) return showErr("Por favor ingresa tu nombre completo.");
+    if (!phone) return showErr("Por favor ingresa tu número de WhatsApp.");
+    if (!date) return showErr("Por favor selecciona una fecha.");
+    if (date < UTIL.today()) return showErr("La fecha no puede ser anterior a hoy.");
+    if (!time) return showErr("Por favor selecciona una hora de inicio.");
+    if (S.form.type === "other" && !document.getElementById("f-other").value.trim())
+      return showErr("Por favor especifica el tipo de reserva.");
+  }
+  if (S.step === 2 && !S.form.payment) return showErr("Por favor selecciona un método de pago.");
+  S.step++;
+  if (S.step === 3) buildSummary();
+  updateSteps();
+};
+
+window.prevStep = function() { S.step = Math.max(1, S.step - 1); updateSteps(); };
+
+function showErr(msg) {
+  const el = document.getElementById("form-err");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+}
+
+function updateSteps() {
+  [1,2,3,4].forEach(i => document.getElementById(`step-${i}`)?.classList.remove("active"));
+  document.getElementById(`step-${S.step}`)?.classList.add("active");
+  [1,2,3].forEach(i => {
+    const d = document.getElementById(`dot-${i}`);
+    if (!d) return;
+    d.classList.remove("active","done");
+    if (i < S.step) d.classList.add("done");
+    else if (i === S.step) d.classList.add("active");
+  });
+}
+
+function calcPrice() {
+  const courtId = document.getElementById("f-court").value;
+  const dur = parseInt(document.getElementById("f-dur").value) || 1;
+  const court = S.courts.find(c => c.id === courtId);
+  if (!court) return { base: 0, total: 0 };
+  if (dur === 1) return { base: court.p1, total: court.p1 };
+  if (dur === 2) return { base: court.p1 * 2, discount: court.disc ? court.p1 * 2 - court.p2 : 0, total: court.disc ? court.p2 : court.p1 * 2 };
+  return { base: court.p1 * dur, total: court.p1 * dur };
+}
+
+function buildSummary() {
+  const courtId = document.getElementById("f-court").value;
+  const court = S.courts.find(c => c.id === courtId) || { emoji:"🏟️", name: courtId };
+  const dur = parseInt(document.getElementById("f-dur").value);
+  const time = document.getElementById("f-time").value;
+  const endTime = UTIL.timeAdd(time, dur);
+  const isOther = S.form.type === "other";
+  const typeLabels = { rental:"⚽ Alquiler", tournament:"🏆 Campeonato" };
+  const typeLabel = isOther
+    ? `✏️ Otro: ${document.getElementById("f-other").value.trim() || "—"}`
+    : (typeLabels[S.form.type] || S.form.type);
+  const price = isOther ? null : calcPrice();
+  const rows = [
+    ["Cancha", `${court.emoji} ${court.name}`],
+    ["Tipo", typeLabel],
+    ["Fecha", UTIL.formatDate(document.getElementById("f-date").value)],
+    ["Hora", `${time} - ${endTime}`],
+    ["Duración", `${dur} Hora${dur > 1 ? "s" : ""}`],
+    ["Nombre", document.getElementById("f-name").value],
+    ["WhatsApp", document.getElementById("f-phone").value],
+    ["Método Pago", S.form.payment],
+  ];
+  const notes = document.getElementById("f-notes").value.trim();
+  if (notes) rows.push(["Notas", notes]);
+  document.getElementById("sum-rows").innerHTML = rows.map(([l,v]) => `<div class="sum-row"><span class="sum-lbl">${l}</span><span class="sum-val">${v}</span></div>`).join("");
+  const priceBox = document.getElementById("price-box");
+  if (isOther) {
+    priceBox.innerHTML = `<div style="display:flex;align-items:center;gap:.7rem;font-size:.88rem;color:var(--gray)">
+      <span style="font-size:1.4rem">💬</span>
+      <span>El precio se coordinará directamente con el encargado. Te contactaremos por WhatsApp.</span>
+    </div>`;
+  } else {
+    let pricHtml = `<div class="price-line"><span>Precio base</span><span>${CFG.currency} ${price.base}</span></div>`;
+    if (price.discount) pricHtml += `<div class="price-line"><span>Descuento 2h</span><span style="color:var(--green)">- ${CFG.currency} ${price.discount}</span></div>`;
+    pricHtml += `<div class="price-total"><span>TOTAL</span><span>${CFG.currency} ${price.total}</span></div>`;
+    priceBox.innerHTML = pricHtml;
+  }
+}
+
+window.submitReservation = async function() {
+  const btn = document.getElementById("submit-btn");
+  btn.disabled = true; btn.textContent = "Confirmando...";
+  const courtId = document.getElementById("f-court").value;
+  const court = S.courts.find(c => c.id === courtId) || { name: courtId };
+  const dur = parseInt(document.getElementById("f-dur").value);
+  const date = document.getElementById("f-date").value;
+  const time = document.getElementById("f-time").value;
+  const price = calcPrice();
+  const name = document.getElementById("f-name").value.trim();
+  const phone = document.getElementById("f-phone").value.trim();
+  const isOther = S.form.type === "other";
+  const customType = isOther ? document.getElementById("f-other").value.trim() : null;
+  const reservation = {
+    type: S.form.type,
+    customType: customType || null,
+    courtId,
+    name, phone, date, time, duration: dur,
+    payment: S.form.payment, status: "pending",
+    notes: document.getElementById("f-notes").value.trim(),
+    total: isOther ? 0 : price.total
+  };
+  try {
+    await FS.add(COL.reservations, reservation);
+    const confNum = "CONF-" + Math.floor(10000 + Math.random() * 90000);
+    const endTime = UTIL.timeAdd(time, dur);
+    document.getElementById("conf-num").textContent = confNum;
+    document.getElementById("conf-num").onclick = () => { navigator.clipboard?.writeText(confNum); };
+    const totalDisplay = (S.form.type === "other") ? "A coordinar con encargado" : `${CFG.currency} ${price.total}`;
+    document.getElementById("conf-details").innerHTML = [
+      ["Quién", name],["Cancha", `${court.emoji || "🏟️"} ${court.name}`],
+      ["Fecha", UTIL.formatDate(date)],["Hora", `${time} - ${endTime}`],
+      ["Total", totalDisplay]
+    ].map(([l,v]) => `<div class="conf-row"><span class="cl">${l}</span><span class="cv">${v}</span></div>`).join("");
+    const waMsg = (S.form.type === "other")
+      ? `Hola! Confirmo mi reserva número ${confNum} para ${court.name} el ${UTIL.formatDate(date)} a las ${time}. Tipo: ${customType || "Otro"}. Quedo pendiente del precio.`
+      : `Hola! Confirmo mi reserva número ${confNum} para ${court.name} el ${UTIL.formatDate(date)} a las ${time}. Total: ${CFG.currency} ${price.total}`;
+    document.getElementById("conf-wa").href = UTIL.wa(CFG.phone, waMsg);
+    S.step = 4; updateSteps();
+  } catch(e) { showErr("Error al confirmar. Intenta de nuevo."); }
+  btn.disabled = false; btn.textContent = "✅ Confirmar Reserva";
+};
+
+window.resetForm = function() {
+  S.step = 1; S.form = { type: "rental", payment: "efectivo" };
+  ["f-name","f-phone","f-date","f-time","f-notes","f-other"].forEach(id => { const el = document.getElementById(id); if(el) el.value = ""; });
+  document.getElementById("f-dur").value = "1";
+  document.getElementById("f-type").value = "rental";
+  document.getElementById("other-wrap").classList.add("hidden");
+  payBtns.forEach((b,i) => b.classList.toggle("sel", i===0));
+  document.getElementById("form-err").classList.add("hidden");
+  updateSteps();
+};
+
+window.submitTournament = function() {
+  const name = document.getElementById("t-name").value.trim();
+  const phone = document.getElementById("t-phone").value.trim();
+  const team = document.getElementById("t-team").value.trim();
+  if (!name || !phone || !team) { alert("Por favor completa todos los campos."); return; }
+  const msg = `Hola! Quiero inscribir mi equipo "${team}" al campeonato.\nRepresentante: ${name}\nWhatsApp: ${phone}`;
+  window.open(UTIL.wa(CFG.phone, msg), "_blank", "noopener,noreferrer");
+};
+
+// WA BUTTONS
+function setWaHref(id, msg) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.href = UTIL.wa(CFG.phone, msg);
+    el.target = "_blank";
+    el.rel = "noopener noreferrer";
+  }
+}
+setWaHref("nav-wa", CFG.wa.info);
+setWaHref("hero-wa", CFG.wa.rental);
+setWaHref("mob-wa", CFG.wa.info);
+setWaHref("wa-btn-ev", CFG.wa.event);
+setWaHref("contact-wa", CFG.wa.info);
+setWaHref("footer-wa", CFG.wa.info);
+document.getElementById("wa-btn-tourn")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  window.open(UTIL.wa(CFG.phone, CFG.wa.tournament), "_blank", "noopener,noreferrer");
+});
+
+// BURGER
+document.getElementById("burger").onclick = () => document.getElementById("mob-nav").classList.toggle("open");
+document.querySelectorAll("#mob-nav a").forEach(a => a.onclick = () => document.getElementById("mob-nav").classList.remove("open"));
+
+// REVEAL OBSERVER
+function observeReveal() {
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("in"); }), { threshold: 0.12 });
+  document.querySelectorAll(".reveal:not(.in)").forEach(el => obs.observe(el));
+}
+observeReveal();
+
+// LOAD DATA
+async function init() {
+  // Hide loader after max 3s regardless, then also hide once first data arrives
+  const hideLoader = () => document.getElementById("loader").classList.add("gone");
+  setTimeout(hideLoader, 3000); // safety fallback
+
+  // Start listeners immediately — don't wait for seed
+  FS.listen(COL.courts, data => { S.courts = data; renderCourts(); hideLoader(); }, "order");
+FS.listen(COL.eventTypes, data => {
+    S.events = data;
+    renderEvents();
+    populateTypeSelect();
+  }, "order");
+  // Sync initial select state
+  S.form.type = document.getElementById("f-type").value;
+  FS.listenAll(COL.reservations, data => { S.reserves = data; renderCalendar(); });
+  FS.listenAll(COL.competitions, data => { S.competition = data[0] || null; renderTournament(); });
+  renderCalendar();
+
+  // Seed runs in background — won't block UI
+  seedIfEmpty();
+}
+init();
+</script>
+</body>
+</html>
