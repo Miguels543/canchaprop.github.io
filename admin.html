@@ -16,7 +16,6 @@
 html,body{height:100%;background:var(--black);color:var(--white);font-family:'Syne',sans-serif;overflow:hidden}
 h1,h2,h3,h4,h5,h6{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em}
 
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1.2rem;border-radius:.6rem;font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;cursor:pointer;border:none;text-decoration:none;transition:all .2s;white-space:nowrap}
 .btn-g{background:var(--green);color:#000}.btn-g:hover{background:var(--lime)}
 .btn-gd{background:var(--gold);color:#000}.btn-gd:hover{background:#e6c200}
@@ -27,25 +26,34 @@ h1,h2,h3,h4,h5,h6{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em}
 .btn-fw{width:100%;justify-content:center}
 .btn:disabled{opacity:.5;cursor:default}
 
-/* ALERTS */
 .alert{padding:.8rem 1rem;border-radius:.7rem;font-size:.83rem;margin:.6rem 0;display:flex;gap:.5rem;align-items:flex-start}
 .hidden{display:none!important}
 .a-err{background:rgba(255,61,0,.1);border:1px solid rgba(255,61,0,.3);color:#ff8a65}
 .a-ok{background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.25);color:var(--green)}
 
-/* BADGE */
 .badge{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:99px;font-size:.7rem;font-weight:700}
 .b-ok{background:rgba(0,200,83,.15);color:var(--green)}
 .b-pend{background:rgba(255,214,0,.15);color:var(--gold)}
 .b-cancel{background:rgba(255,61,0,.15);color:var(--red)}
 
-/* CARD */
+/* código badge */
+.codigo-badge{
+  font-family:'Space Mono',monospace;
+  font-size:.72rem;font-weight:700;
+  background:rgba(0,200,83,.08);
+  border:1px solid rgba(0,200,83,.2);
+  color:var(--green);
+  padding:.2rem .55rem;
+  border-radius:.35rem;
+  white-space:nowrap;
+  letter-spacing:.04em;
+}
+
 .card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.2rem;padding:1.5rem}
 .card-hdr{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;margin-bottom:1.2rem}
 .card-title{font-size:1.1rem;color:var(--white)}
 .card-sub{font-size:.78rem;color:var(--gray);margin-top:.1rem}
 
-/* INPUT */
 label{display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);margin-bottom:.35rem}
 input,select,textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:.55rem;padding:.65rem .85rem;color:var(--white);font-family:'Syne',sans-serif;font-size:.86rem;transition:border-color .2s;outline:none}
 input:focus,select:focus,textarea:focus{border-color:var(--green)}
@@ -53,7 +61,6 @@ select option{background:var(--coal)}
 .fg{margin-bottom:.9rem}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
 
-/* TOGGLE */
 .toggle-wrap{display:flex;align-items:center;gap:.7rem;cursor:pointer}
 .toggle-track{width:40px;height:22px;background:rgba(255,255,255,.15);border-radius:99px;position:relative;transition:background .2s;flex-shrink:0}
 .toggle-track.on{background:var(--green)}
@@ -61,7 +68,6 @@ select option{background:var(--coal)}
 .toggle-track.on .toggle-thumb{left:21px}
 .toggle-lbl{font-size:.82rem;color:var(--white)}
 
-/* TABLE */
 table{width:100%;border-collapse:collapse}
 thead{background:rgba(0,200,83,.05)}
 th{padding:.7rem 1rem;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gray);font-weight:700;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -69,7 +75,6 @@ td{padding:.7rem 1rem;font-size:.83rem;border-bottom:1px solid rgba(255,255,255,
 tr:hover td{background:rgba(255,255,255,.02)}
 .tw{overflow-x:auto}
 
-/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem}
 .modal-overlay.hidden{display:none!important}
 .modal{background:var(--dark);border:1px solid rgba(0,200,83,.2);border-radius:1.4rem;padding:2rem;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
@@ -78,7 +83,21 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .mc{background:none;border:none;color:var(--gray);font-size:1.4rem;cursor:pointer;padding:.2rem .5rem;border-radius:.4rem}
 .mc:hover{color:var(--white);background:rgba(255,255,255,.08)}
 
-/* LAYOUT */
+/* código readonly en modal */
+.codigo-display{
+  background:rgba(0,200,83,.06);
+  border:1.5px solid rgba(0,200,83,.2);
+  border-radius:.55rem;
+  padding:.65rem .85rem;
+  font-family:'Space Mono',monospace;
+  font-size:.95rem;
+  font-weight:700;
+  color:var(--green);
+  letter-spacing:.06em;
+  text-align:center;
+  width:100%;
+}
+
 #login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem}
 .lc{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.5rem;padding:2.5rem;width:100%;max-width:420px}
 .ll{text-align:center;margin-bottom:2rem}
@@ -89,7 +108,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 #admin-app{display:none;height:100vh;flex-direction:row}
 #admin-app.show{display:flex}
 
-/* SIDEBAR */
 #sidebar{width:260px;flex-shrink:0;background:var(--dark);border-right:1px solid rgba(0,200,83,.15);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
 .sh{padding:1.2rem;border-bottom:1px solid rgba(0,200,83,.15)}
 .sl{display:flex;align-items:center;gap:.7rem}
@@ -110,17 +128,14 @@ tr:hover td{background:rgba(255,255,255,.02)}
 #user-email{font-size:.82rem;color:var(--white)}
 .su-role{font-size:.68rem;color:var(--gray)}
 
-/* MAIN */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .topbar{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 1.5rem;border-bottom:1px solid rgba(0,200,83,.15);background:rgba(0,0,0,.2);flex-shrink:0}
 #page-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--white)}
 .page-wrap{flex:1;overflow-y:auto;padding:1.5rem}
 
-/* PAGES */
 .page{display:none}
 .page.active{display:block}
 
-/* STATS */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.9rem;margin-bottom:1.5rem}
 .sc{background:var(--card-bg);border:1px solid rgba(0,200,83,.15);border-radius:1rem;padding:1.2rem;display:flex;flex-direction:column;gap:.6rem}
 .si{font-size:1.6rem}
@@ -128,16 +143,14 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .sv{font-size:1.6rem;font-weight:800;color:var(--white)}
 .sv.g{color:var(--green)}.sv.gd{color:var(--gold)}
 
-/* RESERVATIONS */
 .res-layout{display:grid;grid-template-columns:1fr 340px;gap:1.2rem}
 .res-filters-bar{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.2rem;padding:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;margin-bottom:1rem}
 .rf{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
 .rf input,.rf select{width:auto}
-.rf input[type="text"]{width:180px}
+.rf input[type="text"]{width:210px}
 .rf input[type="date"]{width:145px}
 .rf select{width:160px}
 
-/* SIDE PANEL */
 .sp-stats{margin-bottom:.8rem}
 .sp-mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:.8rem}
 .sp-stat{text-align:center}
@@ -150,7 +163,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .sp-time{font-family:'Space Mono',monospace;font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.2rem}
 .sp-info{font-size:.75rem;color:var(--gray)}
 
-/* CALENDAR PAGE */
 .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
 .admin-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .adcal-hdr{text-align:center;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);padding:.4rem 0}
@@ -164,7 +176,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .cal-leg-item{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--gray)}
 .cal-leg-dot{width:10px;height:10px;border-radius:50%}
 
-/* AVAILABILITY */
 .tl-wrap{display:flex;flex-direction:column;gap:1.5rem;overflow-y:auto;max-height:calc(100vh - 200px)}
 .tl-court{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1rem;padding:1.2rem;overflow-x:auto}
 .tl-name{font-size:1rem;color:var(--white);margin-bottom:.8rem}
@@ -175,7 +186,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .tl-block{position:absolute;top:4px;height:calc(100% - 8px);border-radius:.4rem;display:flex;align-items:center;padding:0 .5rem;font-size:.72rem;font-weight:700;cursor:pointer;overflow:hidden;transition:opacity .2s}
 .tl-block:hover{opacity:.85}
 
-/* COURTS/EVENTS PAGE */
 .item-list{display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem}
 .item-card{background:var(--card-bg);border:1px solid rgba(0,200,83,.15);border-radius:1.1rem;padding:1.4rem;display:grid;grid-template-columns:1fr auto;gap:1.2rem;align-items:start}
 .ic-emoji{font-size:1.8rem;margin-bottom:.3rem}
@@ -190,7 +200,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .ic-badge.inact{background:rgba(255,255,255,.08);color:var(--gray)}
 .ic-actions{display:flex;flex-direction:column;gap:.5rem}
 
-/* RESPONSIVE ADMIN */
 @media(max-width:1200px){.res-layout{grid-template-columns:1fr}}
 @media(max-width:900px){#sidebar{display:none}.page-wrap{padding:1rem}}
 </style>
@@ -215,7 +224,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 
 <!-- ADMIN APP -->
 <div id="admin-app">
-  <!-- SIDEBAR -->
   <aside id="sidebar">
     <div class="sh">
       <div class="sl">
@@ -248,7 +256,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
   </aside>
 
-  <!-- MAIN -->
   <div id="main">
     <div class="topbar">
       <div id="page-title">DASHBOARD</div>
@@ -271,7 +278,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
             <div><div class="card-title">Reservas Recientes</div><div class="card-sub">Últimas 8</div></div>
             <button class="btn btn-gh btn-sm" onclick="go('reservations')">Ver todas →</button>
           </div>
-          <div class="tw"><table><thead><tr><th>Nombre</th><th>Fecha</th><th>Hora</th><th>Servicio</th><th>Total</th><th>Estado</th></tr></thead><tbody id="dash-tbody"></tbody></table></div>
+          <div class="tw"><table><thead><tr><th>Código</th><th>Nombre</th><th>Fecha</th><th>Hora</th><th>Servicio</th><th>Total</th><th>Estado</th></tr></thead><tbody id="dash-tbody"></tbody></table></div>
         </div>
       </div>
 
@@ -280,7 +287,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="res-filters-bar">
           <div><div class="card-title">Reservas</div><div class="card-sub"><span id="res-count">0</span> resultados</div></div>
           <div class="rf">
-            <input type="text" id="rf-search" placeholder="🔍 Buscar nombre..." oninput="renderReservations()"/>
+            <!-- placeholder actualizado: acepta nombre O código -->
+            <input type="text" id="rf-search" placeholder="🔍 Nombre o CONF-XXXXX..." oninput="renderReservations()"/>
             <input type="date" id="rf-date" onchange="renderReservations()"/>
             <select id="rf-type" onchange="renderReservations()">
               <option value="">Todos los tipos</option>
@@ -292,7 +300,8 @@ tr:hover td{background:rgba(255,255,255,.02)}
         </div>
         <div class="res-layout">
           <div class="card" style="padding:0;overflow:hidden">
-            <div class="tw"><table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Fecha</th><th>Hora</th><th>Servicio</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="res-tbody"></tbody></table></div>
+            <!-- Columna Código añadida, colspan ajustado a 9 -->
+            <div class="tw"><table><thead><tr><th>Código</th><th>Nombre</th><th>Teléfono</th><th>Fecha</th><th>Hora</th><th>Servicio</th><th>Total</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="res-tbody"></tbody></table></div>
           </div>
           <div style="display:flex;flex-direction:column;gap:1rem">
             <div class="card sp-stats">
@@ -367,8 +376,23 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <div class="modal-overlay hidden" id="m-res">
   <div class="modal">
     <div class="mh"><span class="mt">✏️ Editar Reserva</span><button class="mc" onclick="closeModal('m-res')">×</button></div>
-    <div class="fr"><div class="fg"><label for="er-name">Nombre</label><input type="text" id="er-name"/></div><div class="fg"><label for="er-phone">Teléfono</label><input type="tel" id="er-phone"/></div></div>
-    <div class="fr"><div class="fg"><label for="er-date">Fecha</label><input type="date" id="er-date"/></div><div class="fg"><label for="er-time">Hora</label><input type="time" id="er-time"/></div></div>
+    <!-- Código solo lectura -->
+    <div class="fg">
+      <label>Código de Reserva</label>
+      <div class="codigo-display" id="er-codigo">–</div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label for="er-name">Nombre</label><input type="text" id="er-name"/></div>
+      <div class="fg"><label for="er-phone">Teléfono</label><input type="tel" id="er-phone"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label for="er-date">Fecha</label><input type="date" id="er-date"/></div>
+      <div class="fg"><label for="er-time">Hora</label><input type="time" id="er-time"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label for="er-court">Cancha</label><select id="er-court"></select></div>
+      <div class="fg"><label for="er-type">Tipo de Reserva</label><select id="er-type"></select></div>
+    </div>
     <div class="fr">
       <div class="fg"><label for="er-dur">Duración</label><select id="er-dur"><option value="1">1 Hora</option><option value="2">2 Horas</option><option value="3">3 Horas</option></select></div>
       <div class="fg"><label for="er-pay">Pago</label><select id="er-pay"><option value="efectivo">Efectivo</option><option value="yape">Yape</option><option value="plin">Plin</option><option value="transferencia">Transferencia</option><option value="por confirmar">Por confirmar</option></select></div>
@@ -443,6 +467,17 @@ import { COL, FS, AUTH, UTIL } from "./firebase.js";
 
 const A = { user:null, courts:[], events:[], reserves:[], competition:null, page:"dashboard", calDate:new Date(), editId:null };
 
+// ── Genera código único CONF-XXXXX ──────────────────────────────────────────
+function genCodigo(existingCodes = []) {
+  const used = new Set(existingCodes);
+  let codigo;
+  do {
+    const num = Math.floor(10000 + Math.random() * 90000); // 10000–99999
+    codigo = `CONF-${num}`;
+  } while (used.has(codigo));
+  return codigo;
+}
+
 // AUTH
 AUTH.onChange(user => {
   A.user = user;
@@ -459,9 +494,9 @@ AUTH.onChange(user => {
 
 window.doLogin = async function() {
   const email = document.getElementById("login-email").value.trim();
-  const pass = document.getElementById("login-pass").value;
-  const err = document.getElementById("login-err");
-  const btn = document.getElementById("login-btn");
+  const pass  = document.getElementById("login-pass").value;
+  const err   = document.getElementById("login-err");
+  const btn   = document.getElementById("login-btn");
   err.classList.add("hidden");
   if (!email || !pass) { err.textContent = "Por favor completa ambos campos."; err.classList.remove("hidden"); return; }
   btn.disabled = true; btn.textContent = "Ingresando...";
@@ -497,8 +532,8 @@ window.go = function(page) {
 document.querySelectorAll(".nav-item").forEach(n => n.onclick = () => go(n.dataset.page));
 
 function loadAll() {
-  FS.listen(COL.courts, d => { A.courts = d; if (A.page==="dashboard") renderDash(); if (A.page==="courts") renderCourts(); updateBadge(); }, "order");
-  FS.listen(COL.eventTypes, d => { A.events = d; if (A.page==="dashboard") renderDash(); if (A.page==="eventTypes") renderAdminEvents(); updateBadge(); }, "order");
+  FS.listen(COL.courts,     d => { A.courts  = d; if (A.page==="dashboard") renderDash(); if (A.page==="courts") renderCourts(); updateBadge(); }, "order");
+  FS.listen(COL.eventTypes, d => { A.events  = d; if (A.page==="dashboard") renderDash(); if (A.page==="eventTypes") renderAdminEvents(); updateBadge(); }, "order");
   FS.listenAll(COL.reservations, d => { A.reserves = d; updateBadge(); refresh(); });
   FS.listenAll(COL.competitions, d => { A.competition = d[0] || null; });
 }
@@ -509,7 +544,7 @@ function refresh() {
 }
 
 function updateBadge() {
-  const pend = A.reserves.filter(r => r.status === "pending").length;
+  const pend  = A.reserves.filter(r => r.status === "pending").length;
   const badge = document.getElementById("res-badge");
   badge.textContent = pend;
   badge.classList.toggle("hidden", pend === 0);
@@ -517,19 +552,27 @@ function updateBadge() {
 
 // DASHBOARD
 function renderDash() {
-  const today = UTIL.today();
+  const today  = UTIL.today();
   const todayR = A.reserves.filter(r => r.date === today);
-  document.getElementById("d-total").textContent = A.reserves.length;
-  document.getElementById("d-today").textContent = todayR.length;
-  document.getElementById("d-rev").textContent = "S/. " + todayR.reduce((s,r) => s + (r.total || 0), 0);
-  document.getElementById("d-pend").textContent = A.reserves.filter(r => r.status === "pending").length;
+  document.getElementById("d-total").textContent  = A.reserves.length;
+  document.getElementById("d-today").textContent  = todayR.length;
+  document.getElementById("d-rev").textContent    = "S/. " + todayR.reduce((s,r) => s + (r.total || 0), 0);
+  document.getElementById("d-pend").textContent   = A.reserves.filter(r => r.status === "pending").length;
   document.getElementById("d-courts").textContent = A.courts.filter(c => c.active).length;
-  document.getElementById("d-evts").textContent = A.events.filter(e => e.active).length;
-  const recent = [...A.reserves].sort((a,b) => b.date?.localeCompare(a.date)).slice(0,8);
+  document.getElementById("d-evts").textContent   = A.events.filter(e => e.active).length;
+  const recent = [...A.reserves].sort((a,b) => (b.createdAt||0) - (a.createdAt||0)).slice(0,8);
   document.getElementById("dash-tbody").innerHTML = recent.map(r => {
     const court = A.courts.find(c => c.id === r.courtId) || { name: r.courtId };
-    return `<tr><td>${r.name||"–"}</td><td>${UTIL.formatDate(r.date)}</td><td>${r.time||"–"}</td><td>${court.name}</td><td>S/. ${r.total||0}</td><td>${statusBadge(r.status)}</td></tr>`;
-  }).join("") || `<tr><td colspan="6" style="text-align:center;color:var(--gray);padding:1.5rem">Sin reservas aún</td></tr>`;
+    return `<tr>
+      <td><span class="codigo-badge">${r.codigo || "–"}</span></td>
+      <td>${r.name||"–"}</td>
+      <td>${UTIL.formatDate(r.date)}</td>
+      <td>${r.time||"–"}</td>
+      <td>${court.name}</td>
+      <td>S/. ${r.total||0}</td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="7" style="text-align:center;color:var(--gray);padding:1.5rem">Sin reservas aún</td></tr>`;
 }
 
 function statusBadge(s) {
@@ -541,23 +584,23 @@ function statusBadge(s) {
 // RESERVATIONS
 window.renderReservations = function() {
   const search = document.getElementById("rf-search").value.toLowerCase();
-  const date = document.getElementById("rf-date").value;
-  const type = document.getElementById("rf-type").value;
+  const date   = document.getElementById("rf-date").value;
+  const type   = document.getElementById("rf-type").value;
   let filtered = A.reserves.filter(r => {
-    if (search && !r.name?.toLowerCase().includes(search)) return false;
+    // Busca por nombre O por código CONF-XXXXX
+    if (search && !r.name?.toLowerCase().includes(search) && !r.codigo?.toLowerCase().includes(search)) return false;
     if (date && r.date !== date) return false;
     if (type && r.type !== type) return false;
     return true;
-  }).sort((a,b) => b.date?.localeCompare(a.date));
+  }).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   document.getElementById("res-count").textContent = filtered.length;
   const typeLabels = { rental:"⚽ Alquiler", tournament:"🏆 Campeonato", other:"✏️ Otro" };
   document.getElementById("res-tbody").innerHTML = filtered.map(r => {
-    const court = A.courts.find(c => c.id === r.courtId) || { emoji:"🏟️", name: r.courtId };
-    const typeLabel = r.type === "other"
-      ? `✏️ ${r.customType || "Otro"}`
-      : (typeLabels[r.type] || r.type || "–");
+    const court      = A.courts.find(c => c.id === r.courtId) || { emoji:"🏟️", name: r.courtId };
+    const typeLabel  = r.type === "other" ? `✏️ ${r.customType || "Otro"}` : (typeLabels[r.type] || r.type || "–");
     const totalDisplay = r.type === "other" ? `<span style="color:var(--gold);font-size:.75rem">A coordinar</span>` : `S/. ${r.total||0}`;
     return `<tr>
+      <td><span class="codigo-badge">${r.codigo || "–"}</span></td>
       <td>${r.name||"–"}</td>
       <td><a href="tel:${r.phone}" style="color:var(--green)">${r.phone||"–"}</a></td>
       <td>${UTIL.formatDate(r.date)}</td>
@@ -570,7 +613,7 @@ window.renderReservations = function() {
         <button class="btn btn-red btn-sm" onclick="deleteReservation('${r.id}')">🗑️ Eliminar</button>
       </td>
     </tr>`;
-  }).join("") || `<tr><td colspan="8" style="text-align:center;color:var(--gray);padding:1.5rem">Sin resultados</td></tr>`;
+  }).join("") || `<tr><td colspan="9" style="text-align:center;color:var(--gray);padding:1.5rem">Sin resultados</td></tr>`;
   updateSidePanel();
 };
 
@@ -579,14 +622,14 @@ window.updateSidePanel = function() {
   document.getElementById("side-today-lbl").textContent = UTIL.formatDateLong(d);
   const dayR = A.reserves.filter(r => r.date === d).sort((a,b) => a.time?.localeCompare(b.time));
   document.getElementById("side-today-count").textContent = dayR.length;
-  document.getElementById("side-today-rev").textContent = "S/. " + dayR.reduce((s,r) => s + (r.total||0), 0);
-  document.getElementById("side-today-pend").textContent = dayR.filter(r => r.status==="pending").length;
+  document.getElementById("side-today-rev").textContent   = "S/. " + dayR.reduce((s,r) => s + (r.total||0), 0);
+  document.getElementById("side-today-pend").textContent  = dayR.filter(r => r.status==="pending").length;
   const list = document.getElementById("side-res-list");
   list.innerHTML = dayR.map(r => {
     const court = A.courts.find(c => c.id === r.courtId) || { emoji:"🏟️", name: r.courtId };
-    const end = UTIL.timeAdd(r.time, r.duration || 1);
+    const end   = UTIL.timeAdd(r.time, r.duration || 1);
     return `<div class="sp-item" onclick="openReservationModal('${r.id}')">
-      <div class="sp-time">${r.time} - ${end}</div>
+      <div class="sp-time">${r.time} - ${end} <span class="codigo-badge" style="font-size:.65rem;margin-left:.4rem">${r.codigo||""}</span></div>
       <div class="sp-info">${court.emoji} ${court.name} · ${r.name} · ${statusBadge(r.status)}</div>
     </div>`;
   }).join("") || `<div style="color:var(--gray);font-size:.8rem;text-align:center;padding:1.2rem">📋 Sin reservas este día</div>`;
@@ -595,9 +638,9 @@ window.updateSidePanel = function() {
 // ELIMINAR RESERVA
 window.deleteReservation = async function(id) {
   if (!confirm("¿Seguro que quieres eliminar esta reserva? No se puede recuperar.")) return;
-  
   try {
     await FS.delete(COL.reservations, id);
+    closeModal("m-res");
     alert("Reserva eliminada correctamente 🗑️");
   } catch (e) {
     console.error("Error al eliminar:", e);
@@ -621,10 +664,10 @@ function renderAdminCal() {
     const dStr = `${acalDate.getFullYear()}-${String(acalDate.getMonth()+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
     const rsvs = A.reserves.filter(r => r.date === dStr);
     const isToday = dStr === today;
-    const hasR = rsvs.length > 0;
+    const hasR    = rsvs.length > 0;
     let dots = "";
-    if (rsvs.some(r => r.type==="rental")) dots += `<div class="adcal-dot" style="background:#00C853"></div>`;
-    if (rsvs.some(r => r.type==="other")) dots += `<div class="adcal-dot" style="background:#FFD600"></div>`;
+    if (rsvs.some(r => r.type==="rental"))    dots += `<div class="adcal-dot" style="background:#00C853"></div>`;
+    if (rsvs.some(r => r.type==="other"))      dots += `<div class="adcal-dot" style="background:#FFD600"></div>`;
     if (rsvs.some(r => r.type==="tournament")) dots += `<div class="adcal-dot" style="background:#64B5F6"></div>`;
     html += `<div class="adcal-day${hasR?" has":""}${isToday?" today":""}" onclick="${hasR?`showCalDay('${dStr}')`:""}" title="${rsvs.length} reserva(s)">
       <span class="daynum">${d}</span>
@@ -644,8 +687,8 @@ document.getElementById("acal-next").onclick = () => { acalDate.setMonth(acalDat
 
 // AVAILABILITY
 window.renderAvailability = function() {
-  const date = document.getElementById("avail-date").value || UTIL.today();
-  const wrap = document.getElementById("tl-wrap");
+  const date  = document.getElementById("avail-date").value || UTIL.today();
+  const wrap  = document.getElementById("tl-wrap");
   const START = 6, END = 23, TOTAL = (END - START) * 60;
   wrap.innerHTML = A.courts.filter(c => c.active).map(court => {
     const rsvs = A.reserves.filter(r => r.date === date && r.courtId === court.id);
@@ -656,13 +699,13 @@ window.renderAvailability = function() {
     }
     const blocks = rsvs.map(r => {
       const [rh,rm] = r.time.split(":").map(Number);
-      const start = (rh * 60 + rm) - START * 60;
-      const dur = (r.duration || 1) * 60;
-      const left = (start / TOTAL) * 100;
-      const width = (dur / TOTAL) * 100;
-      const colors = { rental:"#00C853", other:"#FFD600", tournament:"#64B5F6" };
-      const bg = colors[r.type] || "#00C853";
-      return `<div class="tl-block" style="left:${left}%;width:${width}%;background:${bg}20;border:1px solid ${bg}50;color:${bg}" onclick="openReservationModal('${r.id}')" title="${r.name} | ${r.time} | ${r.duration}h">
+      const start   = (rh * 60 + rm) - START * 60;
+      const dur     = (r.duration || 1) * 60;
+      const left    = (start / TOTAL) * 100;
+      const width   = (dur   / TOTAL) * 100;
+      const colors  = { rental:"#00C853", other:"#FFD600", tournament:"#64B5F6" };
+      const bg      = colors[r.type] || "#00C853";
+      return `<div class="tl-block" style="left:${left}%;width:${width}%;background:${bg}20;border:1px solid ${bg}50;color:${bg}" onclick="openReservationModal('${r.id}')" title="${r.codigo||""} | ${r.name} | ${r.time} | ${r.duration}h">
         ${r.name} ${r.time}
       </div>`;
     }).join("");
@@ -713,11 +756,11 @@ window.openCourtModal = function(id) {
   if (!c) return;
   A.editId = id;
   document.getElementById("c-modal-title").textContent = "Editar Cancha";
-  document.getElementById("c-name").value = c.name;
+  document.getElementById("c-name").value  = c.name;
   document.getElementById("c-emoji").value = c.emoji;
-  document.getElementById("c-desc").value = c.desc;
-  document.getElementById("c-p1").value = c.p1;
-  document.getElementById("c-p2").value = c.p2;
+  document.getElementById("c-desc").value  = c.desc;
+  document.getElementById("c-p1").value    = c.p1;
+  document.getElementById("c-p2").value    = c.p2;
   setToggle("c-disc","tg-disc",!!c.disc);
   setToggle("c-feat","tg-feat",!!c.featured);
   openModal("m-court");
@@ -725,8 +768,8 @@ window.openCourtModal = function(id) {
 
 window.saveCourtModal = async function() {
   const name = document.getElementById("c-name").value.trim();
-  const p1 = parseFloat(document.getElementById("c-p1").value);
-  const p2 = parseFloat(document.getElementById("c-p2").value);
+  const p1   = parseFloat(document.getElementById("c-p1").value);
+  const p2   = parseFloat(document.getElementById("c-p2").value);
   if (!name || isNaN(p1) || isNaN(p2)) { alert("Por favor completa nombre y precios."); return; }
   const data = {
     name, emoji: document.getElementById("c-emoji").value,
@@ -734,12 +777,8 @@ window.saveCourtModal = async function() {
     p1, p2, disc: document.getElementById("c-disc").checked,
     featured: document.getElementById("c-feat").checked, active: true
   };
-  if (A.editId) {
-    await FS.update(COL.courts, A.editId, data);
-  } else {
-    data.order = A.courts.length;
-    await FS.add(COL.courts, data);
-  }
+  if (A.editId) { await FS.update(COL.courts, A.editId, data); }
+  else { data.order = A.courts.length; await FS.add(COL.courts, data); }
   closeModal("m-court");
 };
 
@@ -773,9 +812,9 @@ window.addEvent = function() {
   A.editId = null;
   document.getElementById("e-modal-title").textContent = "Nuevo Tipo de Reserva";
   ["e-name","e-desc"].forEach(id => document.getElementById(id).value = "");
-  document.getElementById("e-emoji").value = "⚽";
-  document.getElementById("e-price").value = "";
-  document.getElementById("e-color").value = "#FFD600";
+  document.getElementById("e-emoji").value  = "⚽";
+  document.getElementById("e-price").value  = "";
+  document.getElementById("e-color").value  = "#FFD600";
   setToggle("e-active","tg-eact",true);
   openModal("m-event");
 };
@@ -785,9 +824,9 @@ window.openEventModal = function(id) {
   if (!e) return;
   A.editId = id;
   document.getElementById("e-modal-title").textContent = "Editar Tipo de Reserva";
-  document.getElementById("e-name").value = e.name;
+  document.getElementById("e-name").value  = e.name;
   document.getElementById("e-emoji").value = e.emoji;
-  document.getElementById("e-desc").value = e.desc;
+  document.getElementById("e-desc").value  = e.desc;
   document.getElementById("e-price").value = e.price;
   document.getElementById("e-color").value = e.color;
   setToggle("e-active","tg-eact",!!e.active);
@@ -795,7 +834,7 @@ window.openEventModal = function(id) {
 };
 
 window.saveEventModal = async function() {
-  const name = document.getElementById("e-name").value.trim();
+  const name  = document.getElementById("e-name").value.trim();
   const price = parseFloat(document.getElementById("e-price").value);
   if (!name || isNaN(price)) { alert("Por favor completa nombre y precio."); return; }
   const data = {
@@ -804,12 +843,8 @@ window.saveEventModal = async function() {
     price, color: document.getElementById("e-color").value,
     active: document.getElementById("e-active").checked
   };
-  if (A.editId) {
-    await FS.update(COL.eventTypes, A.editId, data);
-  } else {
-    data.order = A.events.length;
-    await FS.add(COL.eventTypes, data);
-  }
+  if (A.editId) { await FS.update(COL.eventTypes, A.editId, data); }
+  else { data.order = A.events.length; await FS.add(COL.eventTypes, data); }
   closeModal("m-event");
 };
 
@@ -823,38 +858,65 @@ window.openReservationModal = function(id) {
   const r = A.reserves.find(x => x.id === id);
   if (!r) return;
   A.editId = id;
-  document.getElementById("er-name").value = r.name || "";
-  document.getElementById("er-phone").value = r.phone || "";
-  document.getElementById("er-date").value = r.date || "";
-  document.getElementById("er-time").value = r.time || "";
-  document.getElementById("er-dur").value = r.duration || 1;
-  document.getElementById("er-pay").value = r.payment || "efectivo";
-  document.getElementById("er-status").value = r.status || "pending";
-  document.getElementById("er-price").value = r.total || 0;
-  document.getElementById("er-notes").value = r.notes || "";
+
+  // Mostrar código (solo lectura)
+  document.getElementById("er-codigo").textContent = r.codigo || "Sin código";
+
+  // Poblar canchas dinámicamente desde A.courts
+  const courtSel = document.getElementById("er-court");
+  courtSel.innerHTML = A.courts.map(c =>
+    `<option value="${c.id}">${c.emoji} ${c.name}</option>`
+  ).join("");
+  courtSel.value = r.courtId || "";
+
+  // Poblar tipos dinámicamente desde A.events
+  const typeSel = document.getElementById("er-type");
+  typeSel.innerHTML = A.events.map(e =>
+    `<option value="${e.id}">${e.emoji} ${e.name}</option>`
+  ).join("");
+  typeSel.value = r.type || "";
+
+  document.getElementById("er-name").value    = r.name     || "";
+  document.getElementById("er-phone").value   = r.phone    || "";
+  document.getElementById("er-date").value    = r.date     || "";
+  document.getElementById("er-time").value    = r.time     || "";
+  document.getElementById("er-dur").value     = r.duration || 1;
+  document.getElementById("er-pay").value     = r.payment  || "efectivo";
+  document.getElementById("er-status").value  = r.status   || "pending";
+  document.getElementById("er-price").value   = r.total    || 0;
+  document.getElementById("er-notes").value   = r.notes    || "";
   openModal("m-res");
 };
 
 window.saveReservation = async function() {
   if (!A.editId) return;
+  const r = A.reserves.find(x => x.id === A.editId);
+
+  // Preserva el código existente; si no tiene, genera uno nuevo
+  const existingCodes = A.reserves.map(x => x.codigo).filter(Boolean);
+  const codigo = r?.codigo || genCodigo(existingCodes);
+
   const data = {
-    name: document.getElementById("er-name").value.trim(),
-    phone: document.getElementById("er-phone").value.trim(),
-    date: document.getElementById("er-date").value,
-    time: document.getElementById("er-time").value,
+    codigo,
+    name:     document.getElementById("er-name").value.trim(),
+    phone:    document.getElementById("er-phone").value.trim(),
+    date:     document.getElementById("er-date").value,
+    time:     document.getElementById("er-time").value,
+    courtId:  document.getElementById("er-court").value,
+    type:     document.getElementById("er-type").value,
     duration: parseInt(document.getElementById("er-dur").value),
-    payment: document.getElementById("er-pay").value,
-    status: document.getElementById("er-status").value,
-    total: parseFloat(document.getElementById("er-price").value) || 0,
-    notes: document.getElementById("er-notes").value.trim()
+    payment:  document.getElementById("er-pay").value,
+    status:   document.getElementById("er-status").value,
+    total:    parseFloat(document.getElementById("er-price").value) || 0,
+    notes:    document.getElementById("er-notes").value.trim()
   };
   await FS.update(COL.reservations, A.editId, data);
   closeModal("m-res");
-  refresh(); // Actualiza la tabla en tiempo real
+  refresh();
 };
 
 // MODAL HELPERS
-window.openModal = (id) => document.getElementById(id)?.classList.remove("hidden");
+window.openModal  = (id) => document.getElementById(id)?.classList.remove("hidden");
 window.closeModal = (id) => document.getElementById(id)?.classList.add("hidden");
 document.querySelectorAll(".modal-overlay").forEach(m => m.onclick = e => { if (e.target === m) m.classList.add("hidden"); });
 
@@ -872,13 +934,13 @@ function setToggle(checkId, trackId, val) {
 
 // INIT
 function init() {
-  document.getElementById("avail-date").value = UTIL.today();
+  document.getElementById("avail-date").value       = UTIL.today();
   document.getElementById("side-date-filter").value = UTIL.today();
 }
 init();
 
-// Expose for HTML attributes
 window.UTIL = UTIL;
+window.A    = A;
 </script>
 </body>
 </html>
