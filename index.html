@@ -58,6 +58,30 @@ h1,h2,h3,h4,h5,h6{font-family:'Bebas Neue',sans-serif;letter-spacing:.02em}
 .alert-success{background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.25);color:var(--green)}
 .alert-info{background:rgba(100,181,246,.08);border:1px solid rgba(100,181,246,.3);color:#90caf9}
 
+/* ===== CONFLICT WARNING — NEW ===== */
+.alert-conflict{
+  background:rgba(255,152,0,.1);
+  border:1.5px solid rgba(255,152,0,.45);
+  color:#ffcc80;
+  border-radius:.8rem;
+  padding:1rem 1.2rem;
+  font-size:.85rem;
+  margin:.8rem 0;
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+  animation: conflictPulse .4s ease;
+}
+@keyframes conflictPulse{
+  0%{transform:scale(1)}
+  40%{transform:scale(1.015)}
+  100%{transform:scale(1)}
+}
+.alert-conflict .cf-title{font-weight:800;font-size:.92rem;color:#ffa726;display:flex;align-items:center;gap:.5rem}
+.alert-conflict .cf-slots{margin-top:.3rem;display:flex;flex-direction:column;gap:.3rem}
+.alert-conflict .cf-slot{background:rgba(255,152,0,.12);border:1px solid rgba(255,152,0,.3);border-radius:.5rem;padding:.35rem .7rem;font-family:'Space Mono',monospace;font-size:.78rem;color:#ffcc80}
+.alert-conflict .cf-hint{font-size:.78rem;color:rgba(255,204,128,.7);margin-top:.2rem}
+
 /* REVEAL ANIMATION */
 .reveal{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s}
 .reveal.in{opacity:1;transform:none}
@@ -138,6 +162,9 @@ input,select,textarea{width:100%;background:rgba(255,255,255,.05);border:1.5px s
 input:focus,select:focus,textarea:focus{border-color:var(--green)}
 select option{background:var(--coal)}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+
+/* INPUT CONFLICT STATE */
+input.conflict-field,select.conflict-field{border-color:rgba(255,152,0,.7)!important;background:rgba(255,152,0,.06)!important;}
 
 .pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
 .pay-btn{padding:.9rem .6rem;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:.7rem;cursor:pointer;text-align:center;transition:all .2s}
@@ -344,7 +371,6 @@ footer{background:var(--dark);border-top:1px solid rgba(0,200,83,.1)}
   </div>
 </section>
 
-  
 <!-- RESERVE -->
 <section id="reserve" class="sec-wrap">
   <div class="sec-inner">
@@ -413,6 +439,14 @@ footer{background:var(--dark);border-top:1px solid rgba(0,200,83,.1)}
             <label for="f-time">Hora de Inicio</label>
             <input type="time" id="f-time" min="06:00" max="23:00"/>
           </div>
+
+          <!-- ===== ALERTA DE CONFLICTO (NUEVO) ===== -->
+          <div class="alert-conflict hidden" id="conflict-alert">
+            <div class="cf-title">⚠️ Horario no disponible</div>
+            <div id="conflict-slots" class="cf-slots"></div>
+            <div class="cf-hint">Por favor elige otra hora o fecha para esta cancha.</div>
+          </div>
+
           <button class="btn btn-primary btn-full" onclick="nextStep()">Continuar →</button>
         </div>
 
@@ -425,7 +459,7 @@ footer{background:var(--dark);border-top:1px solid rgba(0,200,83,.1)}
               <button class="pay-btn sel" data-p="efectivo"><span class="pi">💵</span><span class="pn">Efectivo</span><span class="ps">Paga al llegar</span></button>
               <button class="pay-btn" data-p="yape"><span class="pi">📱</span><span class="pn">Yape</span><span class="ps">Transferencia digital</span></button>
               <button class="pay-btn" data-p="plin"><span class="pi">💳</span><span class="pn">Plin</span><span class="ps">Pago instantáneo</span></button>
-              <button class="pay-btn" data-p="transferencia"><span class="pi">🏦</span><span class="pn">Transferencia</span><span class="ps">Banco / CCI</span></button>
+              <button class="pay-btn" data-p="transferencia"><span class="pi">🏦</span><span class="pn">Transferencia</span><span class="ps">Banco / BCP / Interbank / Etc</span></button>
             </div>
           </div>
           <div class="fg">
@@ -443,6 +477,12 @@ footer{background:var(--dark);border-top:1px solid rgba(0,200,83,.1)}
           <div class="step-title">3. Confirmar Reserva</div>
           <div class="sum-rows" id="sum-rows"></div>
           <div class="price-box" id="price-box"></div>
+          <!-- Alerta de conflicto también en paso 3 por si acaso -->
+          <div class="alert-conflict hidden" id="conflict-alert-3">
+            <div class="cf-title">⚠️ ¡Este horario ya fue reservado!</div>
+            <div id="conflict-slots-3" class="cf-slots"></div>
+            <div class="cf-hint">Regresa al paso 1 y elige otro horario.</div>
+          </div>
           <button class="btn btn-primary btn-lg btn-full" id="submit-btn" onclick="submitReservation()">✅ Confirmar Reserva</button>
           <button class="btn btn-outline btn-full" style="margin-top:.6rem" onclick="prevStep()">← Cambiar datos</button>
         </div>
@@ -481,6 +521,7 @@ footer{background:var(--dark);border-top:1px solid rgba(0,200,83,.1)}
     </div>
   </div>
 </section>
+
 <!-- PAYMENTS -->
 <section id="payments" class="sec-wrap alt">
   <div class="sec-inner">
@@ -563,6 +604,100 @@ const CFG = {
 };
 
 const S = { courts: [], events: [], reserves: [], competition: null, step: 1, form: { type: "rental", payment: "efectivo" } };
+
+// =============================================
+// ===== VALIDACIÓN DE CONFLICTO DE HORARIO ====
+// =============================================
+
+/**
+ * Convierte "HH:MM" a minutos desde medianoche.
+ */
+function timeToMin(t) {
+  const [h, m] = t.split(":").map(Number);
+  return h * 60 + m;
+}
+
+/**
+ * Comprueba si la nueva reserva (courtId, date, time, duration)
+ * choca con alguna reserva existente en S.reserves.
+ * Retorna array de reservas en conflicto (vacío = libre).
+ */
+function checkTimeConflict(courtId, date, time, duration) {
+  if (!courtId || !date || !time || !duration) return [];
+  const dur = parseInt(duration) || 1;
+  const newStart = timeToMin(time);
+  const newEnd   = newStart + dur * 60;
+
+  return S.reserves.filter(r => {
+    if (r.courtId !== courtId)        return false; // otra cancha
+    if (r.date    !== date)           return false; // otro día
+    if (r.status  === "cancelled")    return false; // cancelada, no cuenta
+    const rStart = timeToMin(r.time);
+    const rEnd   = rStart + (parseInt(r.duration) || 1) * 60;
+    // Hay solapamiento cuando los rangos se intersectan
+    return newStart < rEnd && newEnd > rStart;
+  });
+}
+
+/**
+ * Formatea minutos -> "HH:MM"
+ */
+function minToTime(min) {
+  const h = Math.floor(min / 60).toString().padStart(2, "0");
+  const m = (min % 60).toString().padStart(2, "0");
+  return `${h}:${m}`;
+}
+
+/**
+ * Muestra u oculta el bloque de advertencia de conflicto.
+ * @param {Array} conflicts - reservas en conflicto
+ * @param {string} alertId  - id del div .alert-conflict
+ * @param {string} slotsId  - id del div .cf-slots
+ */
+function renderConflictAlert(conflicts, alertId, slotsId) {
+  const alertEl = document.getElementById(alertId);
+  const slotsEl = document.getElementById(slotsId);
+  if (!alertEl || !slotsEl) return;
+
+  if (!conflicts.length) {
+    alertEl.classList.add("hidden");
+    // Quitar estilo de error en los campos
+    ["f-court","f-date","f-time","f-dur"].forEach(id => {
+      document.getElementById(id)?.classList.remove("conflict-field");
+    });
+    return;
+  }
+
+  // Mostrar alerta con los tramos ocupados
+  slotsEl.innerHTML = conflicts.map(r => {
+    const end = minToTime(timeToMin(r.time) + (parseInt(r.duration) || 1) * 60);
+    const court = S.courts.find(c => c.id === r.courtId);
+    return `<div class="cf-slot">🔴 ${r.time} – ${end} · ${court ? court.name : r.courtId} (reservado por ${r.name || "otro cliente"})</div>`;
+  }).join("");
+
+  alertEl.classList.remove("hidden");
+
+  // Marcar campos implicados con borde naranja
+  ["f-court","f-date","f-time","f-dur"].forEach(id => {
+    document.getElementById(id)?.classList.add("conflict-field");
+  });
+}
+
+/**
+ * Llama checkTimeConflict con los valores actuales del formulario
+ * y actualiza el bloque de alerta en el paso 1.
+ */
+function liveConflictCheck() {
+  const courtId  = document.getElementById("f-court").value;
+  const date     = document.getElementById("f-date").value;
+  const time     = document.getElementById("f-time").value;
+  const duration = document.getElementById("f-dur").value;
+  const conflicts = checkTimeConflict(courtId, date, time, duration);
+  renderConflictAlert(conflicts, "conflict-alert", "conflict-slots");
+  return conflicts;
+}
+
+// =============================================
 
 // SEED
 async function seedIfEmpty() {
@@ -743,6 +878,13 @@ fd.min = UTIL.today();
 const maxD = new Date(); maxD.setDate(maxD.getDate() + 60);
 fd.max = maxD.toISOString().split("T")[0];
 
+// ===== LISTENERS EN TIEMPO REAL PARA CONFLICTOS =====
+["f-court", "f-date", "f-time", "f-dur"].forEach(id => {
+  document.getElementById(id)?.addEventListener("change", liveConflictCheck);
+});
+// También al escribir en hora (type=time dispara "input" también)
+document.getElementById("f-time")?.addEventListener("input", liveConflictCheck);
+
 window.nextStep = function() {
   const err = document.getElementById("form-err");
   err.classList.add("hidden");
@@ -758,6 +900,12 @@ window.nextStep = function() {
     if (!time) return showErr("Por favor selecciona una hora de inicio.");
     if (S.form.type === "other" && !document.getElementById("f-other").value.trim())
       return showErr("Por favor especifica el tipo de reserva.");
+
+    // ===== BLOQUEO POR CONFLICTO DE HORARIO =====
+    const conflicts = liveConflictCheck();
+    if (conflicts.length > 0) {
+      return showErr("Este horario ya está ocupado. Por favor elige otra hora o fecha.");
+    }
   }
   if (S.step === 2 && !S.form.payment) return showErr("Por favor selecciona un método de pago.");
   S.step++;
@@ -832,22 +980,53 @@ function buildSummary() {
     pricHtml += `<div class="price-total"><span>TOTAL</span><span>${CFG.currency} ${price.total}</span></div>`;
     priceBox.innerHTML = pricHtml;
   }
+
+  // ===== VERIFICACIÓN FINAL DE CONFLICTO EN PASO 3 =====
+  const finalConflicts = checkTimeConflict(
+    courtId,
+    document.getElementById("f-date").value,
+    time,
+    dur
+  );
+  renderConflictAlert(finalConflicts, "conflict-alert-3", "conflict-slots-3");
+  const submitBtn = document.getElementById("submit-btn");
+  if (finalConflicts.length > 0) {
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.5";
+    submitBtn.textContent = "⛔ Horario no disponible";
+  } else {
+    submitBtn.disabled = false;
+    submitBtn.style.opacity = "1";
+    submitBtn.textContent = "✅ Confirmar Reserva";
+  }
 }
 
 window.submitReservation = async function() {
   const btn = document.getElementById("submit-btn");
+
+  // ===== DOBLE CHECK AL MOMENTO DE CONFIRMAR =====
+  const courtId  = document.getElementById("f-court").value;
+  const date     = document.getElementById("f-date").value;
+  const time     = document.getElementById("f-time").value;
+  const dur      = parseInt(document.getElementById("f-dur").value);
+  const finalConflicts = checkTimeConflict(courtId, date, time, dur);
+  if (finalConflicts.length > 0) {
+    renderConflictAlert(finalConflicts, "conflict-alert-3", "conflict-slots-3");
+    showErr("Este horario ya no está disponible. Por favor regresa y elige otro.");
+    return;
+  }
+
   btn.disabled = true; btn.textContent = "Confirmando...";
-  const courtId = document.getElementById("f-court").value;
   const court = S.courts.find(c => c.id === courtId) || { name: courtId };
-  const dur = parseInt(document.getElementById("f-dur").value);
-  const date = document.getElementById("f-date").value;
-  const time = document.getElementById("f-time").value;
   const price = calcPrice();
   const name = document.getElementById("f-name").value.trim();
   const phone = document.getElementById("f-phone").value.trim();
   const isOther = S.form.type === "other";
   const customType = isOther ? document.getElementById("f-other").value.trim() : null;
+  const confNum = "CONF-" + Math.floor(10000 + Math.random() * 90000);
   const reservation = {
+    codigo: confNum,
+    createdAt: Date.now(),
     type: S.form.type,
     customType: customType || null,
     courtId,
@@ -858,19 +1037,20 @@ window.submitReservation = async function() {
   };
   try {
     await FS.add(COL.reservations, reservation);
-    const confNum = "CONF-" + Math.floor(10000 + Math.random() * 90000);
     const endTime = UTIL.timeAdd(time, dur);
-    document.getElementById("conf-num").textContent = confNum;
-    document.getElementById("conf-num").onclick = () => { navigator.clipboard?.writeText(confNum); };
+    document.getElementById("conf-num").textContent = reservation.codigo;    
+    document.getElementById("conf-num").onclick = () => { navigator.clipboard?.writeText(reservation.codigo); };
     const totalDisplay = (S.form.type === "other") ? "A coordinar con encargado" : `${CFG.currency} ${price.total}`;
     document.getElementById("conf-details").innerHTML = [
       ["Quién", name],["Cancha", `${court.emoji || "🏟️"} ${court.name}`],
       ["Fecha", UTIL.formatDate(date)],["Hora", `${time} - ${endTime}`],
       ["Total", totalDisplay]
     ].map(([l,v]) => `<div class="conf-row"><span class="cl">${l}</span><span class="cv">${v}</span></div>`).join("");
+    const notesVal = document.getElementById("f-notes").value.trim();
+    const notesText = notesVal ? ` Notas: ${notesVal}.` : "";
     const waMsg = (S.form.type === "other")
-      ? `Hola! Confirmo mi reserva número ${confNum} para ${court.name} el ${UTIL.formatDate(date)} a las ${time}. Tipo: ${customType || "Otro"}. Quedo pendiente del precio.`
-      : `Hola! Confirmo mi reserva número ${confNum} para ${court.name} el ${UTIL.formatDate(date)} a las ${time}. Total: ${CFG.currency} ${price.total}`;
+      ? `Hola! Confirmo mi reserva número ${confNum} para ${court.name} el ${UTIL.formatDate(date)} a las ${time}. Tipo: ${customType || "Otro"}. Quedo pendiente del precio.${notesText}`
+      : `Hola! Confirmo mi reserva número ${confNum} para ${court.name} el ${UTIL.formatDate(date)} a las ${time}. Total: ${CFG.currency} ${price.total}.${notesText}`;
     document.getElementById("conf-wa").href = UTIL.wa(CFG.phone, waMsg);
     S.step = 4; updateSteps();
   } catch(e) { showErr("Error al confirmar. Intenta de nuevo."); }
@@ -885,6 +1065,12 @@ window.resetForm = function() {
   document.getElementById("other-wrap").classList.add("hidden");
   payBtns.forEach((b,i) => b.classList.toggle("sel", i===0));
   document.getElementById("form-err").classList.add("hidden");
+  // Limpiar alertas de conflicto
+  document.getElementById("conflict-alert")?.classList.add("hidden");
+  document.getElementById("conflict-alert-3")?.classList.add("hidden");
+  ["f-court","f-date","f-time","f-dur"].forEach(id => {
+    document.getElementById(id)?.classList.remove("conflict-field");
+  });
   updateSteps();
 };
 
@@ -930,29 +1116,28 @@ observeReveal();
 
 // LOAD DATA
 async function init() {
-  // Hide loader after max 3s regardless, then also hide once first data arrives
   const hideLoader = () => document.getElementById("loader").classList.add("gone");
-  setTimeout(hideLoader, 3000); // safety fallback
+  setTimeout(hideLoader, 3000);
 
-  // Start listeners immediately — don't wait for seed
   FS.listen(COL.courts, data => { S.courts = data; renderCourts(); hideLoader(); }, "order");
-FS.listen(COL.eventTypes, data => {
+  FS.listen(COL.eventTypes, data => {
     S.events = data;
     renderEvents();
     populateTypeSelect();
   }, "order");
-  // Sync initial select state
   S.form.type = document.getElementById("f-type").value;
-  FS.listenAll(COL.reservations, data => { S.reserves = data; renderCalendar(); });
+  FS.listenAll(COL.reservations, data => {
+    S.reserves = data;
+    renderCalendar();
+    // Re-chequear conflicto en tiempo real si el usuario tiene campos llenos
+    liveConflictCheck();
+  });
   FS.listenAll(COL.competitions, data => { S.competition = data[0] || null; renderTournament(); });
   renderCalendar();
 
-  // Seed runs in background — won't block UI
   seedIfEmpty();
 }
 init();
 </script>
 </body>
-
 </html>
-
